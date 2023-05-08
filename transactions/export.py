@@ -1,9 +1,9 @@
-from sys import path
-path.append("..\\Expense Manager")
-
-import os
-import pandas as pd
 try:
+    from sys import path
+    path.append("..\\Expense Manager")
+
+    import os.path
+    import pandas
     from details import manage  
     import data.pre_requisites as pre_requisites
 except Exception:
@@ -27,13 +27,13 @@ class transactions:
         if len(self.file_name) == 0:
             raise Exception("0xetrn0ex3")
 
-    def _to_dataframe(self) -> pd.DataFrame:
+    def _to_dataframe(self) -> pandas.DataFrame:
         try:
             transactions_details:list = [i for i in manage().read_transactions() if i.get("transaction_id") in self.transactions_id]
         except Exception:
             raise Exception("0xetrn0ex4")
             
-        return pd.DataFrame(transactions_details,columns=pre_requisites.TRANSACTION_KEYS)
+        return pandas.DataFrame(transactions_details,columns=pre_requisites.TRANSACTION_KEYS)
     
     def to_csv(self) -> None:
         self._to_dataframe().to_csv("%s\\%s.csv" % (self.save_location,self.file_name),index=False)

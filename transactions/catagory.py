@@ -1,10 +1,10 @@
-from sys import path
-path.append("..\\Expense Manager")
+try:    
+    from sys import path
+    path.append("..\\Expense Manager")
 
-import os
-import random
-try:
+    import os.path
     import data.info as info
+    from random import choice
     import data.pre_requisites as pre_requisites
 except Exception:
     raise Exception("0xegbl0001")
@@ -48,7 +48,7 @@ class income:
             raise Exception("0xecat0009")
         
         catagories:dict = self.get_catagories()
-        catagories.update({catagory_name:random.choice(pre_requisites.COLORS)})
+        catagories.update({catagory_name:choice(pre_requisites.COLORS)})
         self._write_catagory(catagories, file = "income.txt" if self.__class__.__name__ == "income" else "expense.txt")
 
     def remove_catagories(self, catagories:list) -> None:

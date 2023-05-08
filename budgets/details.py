@@ -15,13 +15,7 @@ except Exception:
     raise Exception("0xegbl0001")
 
 class manage:
-    def _check_save_path(self) -> None:
-        if os.path.exists(info.DATA_BUDGETS) == False:
-            raise Exception("0xebud0001")
-
-    def get_budgets(self) -> list:
-        self._check_save_path()
-        
+    def get_budgets(self) -> list:        
         try:
             budget_files:list = indexer(info.DATA_BUDGETS).get_files()
         except Exception:
@@ -63,8 +57,7 @@ class manage:
                     bgt.get("range").__class__ in [int, float] and bgt.get("range") > 0,
                     bool(strptime("%s-%s" % (bgt.get("month"), bgt.get("year")), "%m-%Y")),
                     int(bgt.get("year")) in range(1980, 2100),
-                    bgt.get("catagories").__class__ == dict,
-                    [i in expense().get_catagories().keys() for i in bgt.get("catagories").keys()]
+                    bgt.get("catagories") == None or bgt.get("catagories").__class__ == dict and all([i in expense().get_catagories().keys() for i in bgt.get("catagories").keys()])
                 ]
             ) == False:
                 raise Exception
@@ -97,7 +90,7 @@ class manage:
                    range:Union[int, float],
                    month:str,
                    year:str,
-                   catagories:dict) -> None:
+                   catagories:dict = None) -> None:
         
         thread = Thread(self._create_budget_id(), daemon = True)
         thread.start()
@@ -115,7 +108,9 @@ class manage:
         except Exception:
             raise Exception("0xebgt0007")
 
-        self._check_save_path()
+        if os.path.exists(info.DATA_BUDGETS) == False:
+            raise Exception("0xebgt0001")
+
         self._check_budget_validity(entry, exists = False)
         self._write_budget(entry, exists = False)
 
