@@ -11,8 +11,8 @@ except Exception:
 class budgets:
     def __init__(self,
                  budget_range: Union[int, float, range] = None,
-                 month: Union[str, range] = None,
-                 year: Union[str, range] = None,
+                 month: Union[str, range, list] = None,
+                 year: Union[str, range, list] = None,
                  catagories: Union[str, list] = None):
            
         if all([value == None for key, value in locals().items() if key != "self"]):
@@ -39,3 +39,25 @@ class budgets:
         self.month = month
         self.year = year
         self.catagories = catagories
+
+    def filter(self) -> list:
+
+        # Filtering the budget range
+        filtered_list = [
+            i for i in manage().read_budgets() if self.range.__class__ in [int, float] and i.get("range") == self.range
+            or self.range.__class__ in [list, range] and i.get("range") in self.range
+        ] if self.range != None else manage().read_budgets()
+
+        # Filtering the budget year
+        filtered_list = [
+            i for i in filtered_list if self.year.__class__ == str and i.get("year") == self.year
+            or self.year.__class__ in [list, range] and i.get("year") in self.year
+        ] if self.year != None else manage().read_budgets()
+
+        # Filter the budget catagories
+        filtered_list = [
+            i for i in filtered_list if self.catagories.__class__ == str and self.catagories in i.get("catagories").keys()
+            or self.range.__class__ == list and all([i in i.get("catagories").keys() for i in self.catagories])
+        ] if self.catagories != None else manage().read_budgets()
+
+        return filtered_list
