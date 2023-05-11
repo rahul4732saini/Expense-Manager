@@ -83,7 +83,7 @@ class manage:
 
         try:
             for i in transaction_files:
-                with open("%s\\%s" % (info.DATA_TRANSACTIONS,i)) as file:
+                with open("%s\\%s" % (info.DATA_TRANSACTIONS,i), 'r') as file:
                     content: dict = eval(file.read().replace("\n",""))
                     self._check_transaction_validity(content, exists = True)
                     transactions.append(content)
@@ -92,7 +92,7 @@ class manage:
 
         return transactions
 
-    def _write_transaction(self, transaction_dict:dict, exists:bool):
+    def _write_transaction(self, transaction_dict: dict, exists: bool):
         transaction_id: str = transaction_dict.get("transaction_id")
         transaction: str = str(transaction_dict).replace(", ", ",\n").replace("{", "{\n").replace("}", "\n}")
         
