@@ -2,25 +2,29 @@ try:
     from sys import path
     path.append("..\\Expense Manager")
 
-    from budgets.details import manage
-    from transactions.catagory import expense
     from typing import Union
     from datetime import date, time
+    from budgets.details import manage
+    from transactions.catagory import expense
 except Exception:
     raise Exception("0xegbl0001")
 
 class budgets:
     def __init__(self,
-                 budget_id: Union[str, list] = None,
+                 budget_id: Union[str, list[str]] = None,
+                 date_added: Union[date, list[date]] = None,
+                 time_added: Union[time, list[time]] = None,
                  budget_range: Union[int, float, list, range] = None,
-                 month: Union[str, range, list] = None,
-                 year: Union[str, range, list] = None,
-                 catagories: Union[str, list] = None):
+                 month: Union[str, range, list[str]] = None,
+                 year: Union[str, range, list[str]] = None,
+                 catagories: Union[str, list[str]] = None):
            
         if all([value == None for key, value in locals().items() if key != "self"]):
             raise Exception()
 
         self.budget_id = budget_id
+        self.date_added = date_added
+        self.time_added = time_added
         self.range = budget_range
         self.month = month
         self.year = year
@@ -29,10 +33,21 @@ class budgets:
         self._check_validity()
 
     def _check_validity(self) -> None:
+        date_range: list[date] = [date(1979, 12, 31), date(2100, 1, 1)]
+
         if all(
             [
                 #Validating budget_id
-                ...,
+                self.budget_id == None or (self.budget_id in manage().get_budgets_id() if self.budget_id.__class__ == str else False),
+
+                # Validating date_added
+                self.date_added == None or (self.date_added > date(1979, 12, 31) and self.date_added < date(2100, 1, 1) if self.date_added.__class__ == date else
+                all([i > date_range[0] and i < date_range[1] if i.__class__ == date else False for i in self.date_added]) if self.date_added.__class__ == list
+                else False),
+
+                # Validating time_added
+                self.time_added == None or self.time_added.__class__ == time or
+                (all([i.__class__ == time for i in self.time_added]) if self.time_added.__class__ == list else False),
 
                 # Validating budget_range
                 self.range == None or (self.range > 0 if self.range.__class__ in [int, float] else
@@ -61,12 +76,22 @@ class budgets:
             raise Exception()
 
     def filter(self) -> list:
+        # Filter budget_id
+        filtered_list = [
+            i for i in manage().read_budgets() if self.budget_id.__class__ == str and i.get("budget_id") == self.budget_id
+            or self.budget_id.__class__ == list and i.get("budget_id") in self.budget_id
+        ] if self.budget_id != None else manage().read_budgets()
+
+        # Filter date_added
+        filtered_list = [
+            i for i in manage().read_budgets() if self.budget_id.__class__ == date and i.get("budget_id")
+        ]
 
         # Filtering budget_range
         filtered_list = [
-            i for i in manage().read_budgets() if self.range.__class__ in [int, float] and i.get("range") == self.range
+            i for i in filtered_list if self.range.__class__ in [int, float] and i.get("range") == self.range
             or self.range.__class__ in [list, range] and i.get("range") in self.range
-        ] if self.range != None else manage().read_budgets()
+        ] if self.range != None else filtered_list
 
         # Filtering budget year
         filtered_list = [
