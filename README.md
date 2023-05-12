@@ -1,6 +1,9 @@
-# Expense Manager
-# Still in progress....
+# Still in progress...
 
-This is my first python project on github.
+Introducing Expense Manager.
+An application which can manage all transactions you perform, create Budgets for the month which can be evem classified into various catagories.
 
-Just started using github, not much familier with it!
+Set up upcoming transactions and budgets with great ease.
+Modern, interactive and responsive UI and much more to be added soon...
+
+Estimated Finish Date: August 2023
