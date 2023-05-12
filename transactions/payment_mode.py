@@ -48,13 +48,10 @@ class manage:
         if modes.get("name").__len__() > 25:
             raise Exception()
 
-    def _write_file(self, entry: list) -> None:
-        for i in entry:
+    def _write_file(self, payment_modes: list) -> None:
+        for i in payment_modes:
             self._verify(i)
 
-        payment_modes: list = self.get_modes()
-        payment_modes.append(entry)
-        
         payment_modes = str(payment_modes).replace("{", "{\n").replace("}", "\n}").replace("[", "[\n").replace("]", "\n]").replace(", ", ",\n")
 
         with open(info.DATA_PAYMENT_MODES, 'w') as file:
@@ -74,7 +71,9 @@ class manage:
             "catagory": catagory
         }
 
-        self._write_file([entry])
+        payment_modes: list = self.get_modes()
+        payment_modes.append(entry)
+        self._write_file(payment_modes)
 
     def delete_mode(self, mode_name: str) -> None:
         if mode_name not in self.get_mode_names():
@@ -85,5 +84,3 @@ class manage:
 
     def edit_mode(self) -> None:
         ...
-
-manage().delete_mode("UPI")
