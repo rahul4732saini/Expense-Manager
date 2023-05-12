@@ -1,4 +1,5 @@
 # Expense Manager
+# Still in progress....
 
 This is my first python project on github.
 
