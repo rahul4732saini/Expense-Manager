@@ -56,3 +56,10 @@ CATAGORY_FILES = [
     "income.txt",
     "expense.txt"
 ]
+
+PAYMENT_MODE_CATAGORIES = [
+    "bank_account",
+    "wallet",
+    "credit_card",
+    "debit_card"
+]

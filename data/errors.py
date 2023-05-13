@@ -2,6 +2,11 @@ ERROR = {
     "__global__":{
         "0xegbl0001": "One or more of the required modules are missing."
     },
+    "common":{
+        "directory":{
+            "0xedir0001": "The path specified cannot be found."
+        }
+    },
     "transactions":{
         "catagory":{
             "0xecat0001": "Catagories save folder not found.",
@@ -16,9 +21,6 @@ ERROR = {
             "0xecat0010": "Expense Catagories file not found.",
             "0xecat0011": "Corrupted arguments detected while Catagories inspection.",
             "0xecat0012": "Expense Catagories file found to be corrupted."
-        },
-        "directory":{
-            "0xedir0001": "The path specified cannot be found."
         },
         "details":{
             "0xetrn0001": "Unexpected files found in the transactions save folder.",
@@ -42,6 +44,17 @@ ERROR = {
         },
         "analysis":{
             "0xetrn01an": "Invalid arguments detected while processing."
+        },
+        "payment_mode":{
+            "0xepym0001": "Payment Modes file cannot be found.",
+            "0xepym0002": "Payment Modes data file was found to be corrupted.",
+            "0xepym0003": "There was an error in verifying the payment modes.",
+            "0xepym0004": "Payment mode name cannot contain more than 30 characters.",
+            "0xepym0005": "You cannot exceed the limit of 30 payment modes.",
+            "0xepym0006": "All payment modes cannot be deleted.",
+            "0xepym0007": "One or more of the payment modes queued for deletion do not exist.",
+            "0xepym0008": "There was an error in finding the paymend found with the provided name.",
+            "0xepym0009": "No arguments were provided for editing the payment mode."
         }
     },
     "budgets":{
