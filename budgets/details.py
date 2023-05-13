@@ -131,6 +131,9 @@ class manage:
                     year: str = None,
                     catagories: dict = None):
         
+        if all([value == None for key, value in locals() if key not in ["self", "budget_ud"]]):
+            raise Exception()
+
         edit = {key:value for key, value in locals().items() if key != "self" and key != "budget_id" and value != None}
 
         try:

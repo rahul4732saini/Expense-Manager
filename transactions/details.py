@@ -176,14 +176,16 @@ class manage:
                         transaction_date: str = None,
                         description: str = None) -> None:
 
-        edit: dict = {key: value for key, value in locals().items() if value != None and key != "self" and key != "transaction_id"}
+        edit: dict = {key: value for key, value in locals().items() if value != None and key not in ["self", "transaction_id"]}
 
         try:
             i: dict
             for i in self.read_transactions():
                 if i.get("transaction_id") == transaction_id:
-                    content = i
+                    content: dict = i
                     break
+            else:
+                raise Exception
         except Exception:
             raise Exception("0xetrn0006")
 
