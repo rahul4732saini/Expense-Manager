@@ -2,20 +2,20 @@ try:
     from sys import path
     path.append("..\\Expense Manager")
 
-    import random
-    import os.path
     import data.info as info
+    from random import choice
+    from os.path import exists
     import data.pre_requisites as pre_requisites
     from typing import Union
-    from transactions.details import manage
 except Exception:
     raise Exception("0xegbl0001")
 
-class manage:
+class Manage:
     def get_modes(self) -> list[dict]:
-        if os.path.exists(info.DATA_PAYMENT_MODES) == False:
+        if exists(info.DATA_PAYMENT_MODES) == False:
             raise Exception("0xepym0001")
         
+        # Accessing and Reading the payment modes file and verifying it.
         try:
             with open(info.DATA_PAYMENT_MODES, 'r') as file:
                 payment_modes: list = eval(file.read().replace("\n", ""))
@@ -26,16 +26,23 @@ class manage:
             raise Exception("0xepym0002")
 
         length_limit_exceed: bool = payment_modes.__len__() > 30
-        payment_modes = payment_modes[:30] if length_limit_exceed else payment_modes
 
+        if length_limit_exceed:
+            raise Exception("0xepym0011")
+        
+        # Checking for duplicate dictionaries in the payment modes list.
+        if payment_modes.__len__() != [eval(i) for i in set([str(i) for i in payment_modes])].__len__():
+            raise Exception("0xepym0012")
+
+        # Verifying each payment mode dictionary in the list of payment modes.
         for index, element in enumerate(payment_modes):
-            self._verify(element)
+            try:
+                self._verify(element)
+            except Exception:
+                raise Exception("0xepym0002")
             
             current_balance = payment_modes[index]["current_balance"]
             payment_modes[index]["current_balance"] = round(current_balance, 2) if current_balance.__class__ == float else current_balance
-        
-        if length_limit_exceed:
-            self._write_file(payment_modes[:30], check_last = False)
 
         return payment_modes
     
@@ -46,6 +53,7 @@ class manage:
         if mode.__class__ != dict:
             raise Exception("0xepym0003")
 
+        # Verfying the keys and values of the payment mode dictionary provided as the argument.
         if all(
             [
                 mode.get("name").__class__ == str,
@@ -63,6 +71,7 @@ class manage:
         if check_last == True:
             self._verify(payment_modes[-1])
         
+        # Converting the list into a readable string format to be written in the payment modes data file.
         payment_modes = str(payment_modes).replace("{", "{\n").replace("}", "\n}").replace("[", "[\n").replace("]", "\n]").replace(", ", ",\n")
 
         with open(info.DATA_PAYMENT_MODES, 'w') as file:
@@ -76,7 +85,7 @@ class manage:
         if self.get_modes().__len__() >= 30:
             raise Exception("0xepym0005")
 
-        color = random.choice(pre_requisites.COLORS)
+        color = choice(pre_requisites.COLORS)
 
         entry = {
             "name": name,
@@ -90,8 +99,11 @@ class manage:
         self._write_file(payment_modes, check_last = True)
 
     def delete_mode(self, mode_names: list[str]) -> None:
-        valid_mode_names = [i.get("name") for i in self.get_modes() if i.get("name") in mode_names]
 
+        # List of payment mode names queued for deletion that exist, i.e., are valid.
+        valid_mode_names: list = [i.get("name") for i in self.get_modes() if i.get("name") in mode_names]
+
+        # Checking if all the payment modes queued for deletion exist.
         if valid_mode_names.__len__() == self.get_mode_names().__len__():
             raise Exception("0xepym0006")
         
@@ -107,6 +119,9 @@ class manage:
                   current_balance: Union[int ,float] = None,
                   catagory: str = None) -> None:
         name = new_name
+
+        if name in self.get_mode_names():
+            raise Exception("0xepym0010")
 
         edit = {key:value for key, value in locals().items() if key not in ["self", "current_name", "new_name"] and value != None}
 
@@ -132,3 +147,10 @@ class manage:
         payment_modes.append(content)
 
         self._write_file(payment_modes, check_last = True)
+
+class TroubleShoot:
+    def er_0xepym0001(self):
+        ...
+
+    def er_0xepym0002(self):
+        ...

@@ -3,6 +3,7 @@ try:
     path.append("..\\Expense Manager")
     
     import os
+    from payment_mode import Manage
     import data.info as info
     from typing import Union
     from random import randrange
@@ -57,7 +58,7 @@ class manage:
                 trn.get("status") in pre_requisites.STATUS,
                 trn.get("amount").__class__ in [int, float] and trn.get("amount") > 0,
                 trn.get("transaction_type") in pre_requisites.TRANSACTION_TYPES,
-                trn.get("transaction_mode").__class__ == str,
+                trn.get("transaction_mode") in Manage().get_mode_names(),
                 trn.get("catagory").__class__ in [str, dict],
                 trn.get("transaction_time") ==None or bool(strptime(trn.get("transaction_time"), "%H:%M")),
                 trn.get("transaction_date") == None or bool(strptime(trn.get("transaction_date"), "%d-%m-%Y"))

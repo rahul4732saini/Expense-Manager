@@ -4,8 +4,8 @@ path.append("..\\Expense Manager")
 from datetime import date, time
 from typing import Union
 import data.pre_requisites as pre_requisites
-from transactions.details import manage
-from transactions.catagory import income, expense
+from details import manage
+from catagory import income, expense
 
 class transactions:
     def __init__(self,

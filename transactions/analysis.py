@@ -4,7 +4,7 @@ path.append("..\\Expense Manager")
 from time import strptime
 from typing import Union
 try:
-    from transactions.details import manage
+    from details import manage
 except Exception:
     raise Exception("0xegbl0001")
 

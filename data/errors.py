@@ -48,13 +48,15 @@ ERROR = {
         "payment_mode":{
             "0xepym0001": "Payment Modes file cannot be found.",
             "0xepym0002": "Payment Modes data file was found to be corrupted.",
-            "0xepym0003": "There was an error in verifying the payment modes.",
+            "0xepym0003": "There was an error in verifying the payment mode.",
             "0xepym0004": "Payment mode name cannot contain more than 30 characters.",
             "0xepym0005": "You cannot exceed the limit of 30 payment modes.",
             "0xepym0006": "All payment modes cannot be deleted.",
             "0xepym0007": "One or more of the payment modes queued for deletion do not exist.",
             "0xepym0008": "There was an error in finding the paymend found with the provided name.",
-            "0xepym0009": "No arguments were provided for editing the payment mode."
+            "0xepym0009": "No arguments were provided for editing the payment mode.",
+            "0xepym0010": "Cannot use the provided payment mode name as a payment mode with similar name already exists.",
+            "0xepym0011": "The payment mode data file exceeds the limit of payment modes that can be stored (30)."
         }
     },
     "budgets":{
