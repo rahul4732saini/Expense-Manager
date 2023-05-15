@@ -1,3 +1,17 @@
+r"""
+Module related to functions required for the
+management and troubleshooting of payment modes.
+
+This exports:
+
+(Class) Manage:
+    get_modes: return all the existing payment modes dictionaries.
+    get_mode_name: returns all the names of the existing payment modes.
+    add_mode: used for adding a new payment mode.
+    delete_mode: used for deleting payment modes. Takes payment mode names as arguments within a list.
+    edit_mode: used for editing a payment mode details.
+"""
+
 try:
     from sys import path
     path.append("..\\Expense Manager")
