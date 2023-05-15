@@ -53,10 +53,11 @@ ERROR = {
             "0xepym0005": "You cannot exceed the limit of 30 payment modes.",
             "0xepym0006": "All payment modes cannot be deleted.",
             "0xepym0007": "One or more of the payment modes queued for deletion do not exist.",
-            "0xepym0008": "There was an error in finding the paymend found with the provided name.",
+            "0xepym0008": "There was an error in finding the payment mode with the provided name.",
             "0xepym0009": "No arguments were provided for editing the payment mode.",
             "0xepym0010": "Cannot use the provided payment mode name as a payment mode with similar name already exists.",
-            "0xepym0011": "The payment mode data file exceeds the limit of payment modes that can be stored (30)."
+            "0xepym0011": "The payment mode data file exceeds the limit of payment modes that can be stored (30).",
+            "0xepym0012": "Duplicate payment modes were found in the data folder."
         }
     },
     "budgets":{
