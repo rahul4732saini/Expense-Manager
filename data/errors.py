@@ -29,10 +29,10 @@ ERROR = {
             "0xetrn0004": "Transactions save folder not found.",
             "0xetrn0005": "Transaction file not found.",
             "0xetrn0006": "Cannot continue the process as the file is corrupted",
-            "0xetrn0007": "There was an error in creating the transaction ID.",
-            "0xetrn0008": "Unexpected arguments provided for editing transactions.",
+            "0xetrn0007": "There was an error in creating the transaction.",
+            "0xetrn0008": "There was an error in verifying the transaction.",
             "0xetrn0009": "Unexpected arguments detected while creating transactions.",
-            "0xetrn0010": "There was an error in fetching the transaction files.",
+            "0xetrn0010": "There was an error in capturing the transaction files.",
             "0xetrn0011": "The provided catagory is not valid.",
             "0xetrn0012": "Unexpected arguments detected for transaction deletion."
         },

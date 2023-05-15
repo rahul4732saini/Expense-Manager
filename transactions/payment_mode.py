@@ -7,9 +7,9 @@ This exports:
 (Class) Manage:
     get_modes: return all the existing payment modes dictionaries.
     get_mode_name: returns all the names of the existing payment modes.
-    add_mode: used for adding a new payment mode.
+    add_mode: used to add a new payment mode.
     delete_mode: used for deleting payment modes. Takes payment mode names as arguments within a list.
-    edit_mode: used for editing a payment mode details.
+    edit_mode: used for editing a payment mode's details.
 """
 
 try:
@@ -187,7 +187,7 @@ class TroubleShoot:
             return True
         
         with open(info.DATA_PAYMENT_MODES, 'w') as file:
-            file.write(troubleshoot.er_0xepym0001["data_file_content"])
+            file.write(troubleshoot.PAYMENT_MODE["0xepym0001"]["data_file_content"])
 
         return True
 
