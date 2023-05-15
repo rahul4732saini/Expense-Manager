@@ -8,6 +8,7 @@ This exports:
     get_transactions_id: returns the ID of the transactions as strings.
     get_transactions: return a list of all existing valid transactions dictionaries.
     add_transaction: used to create a new transaction.
+    switch_transaction: used to switch transaction status between upcoming - cleared - cancelled.
 """
 
 try:
@@ -16,14 +17,13 @@ try:
     
     import os
     import random
-    import payment_mode as pay_mode
-    import data.info as info
+    import datetime
     from typing import Union
+    import data.info as info
     from threading import Thread
-    from time import strftime, strptime
+    import payment_mode as pay_mode
     from common.directory import indexer
     from catagory import income, expense
-    from datetime import date, time, datetime
     import data.pre_requisites as pre_requisites
 except Exception:
     raise Exception("0xegbl0001")
@@ -68,8 +68,8 @@ class manage:
                 else trn.get("transaction_id").__class__ == str and trn.get("transaction_id").__len__() == 10 and trn.get("transaction_id").isdigit(),
 
                 # Verifying date_added
-                trn.get("date_added").__class__ == date and trn.get("date_added").year in range(1980, datetime.now().year+1),
-                trn.get("time_added").__class__ == time,
+                trn.get("date_added").__class__ == datetime.date and trn.get("date_added").year in range(1980, datetime.datetime.now().year+1),
+                trn.get("time_added").__class__ == datetime.time,
 
                 trn.get("status") in pre_requisites.STATUS, # Verifying status
                 trn.get("amount").__class__ in [int, float] and trn.get("amount") > 0, # Verifying amount
@@ -78,8 +78,8 @@ class manage:
                 trn.get("catagory").__class__ in [str, dict], # Verifying catagory
 
                 # Verifying transaction_time & transaction_time
-                trn.get("transaction_time").__class__ in [None, time],
-                trn.get("transaction_date") == None or trn.get("transaction_date").__class__ == date and trn.get("transaction_date").year in range(1980, 2100),
+                trn.get("transaction_time").__class__ in [None, datetime.time],
+                trn.get("transaction_date") == None or trn.get("transaction_date").__class__ == datetime.date and trn.get("transaction_date").year in range(1980, 2100),
 
                 # Verifying description
                 trn.get("description") == None or trn.get("description").__class__ == str and trn.get("description").__len__() <= 100
@@ -94,11 +94,11 @@ class manage:
             [   
                 # Verifying catagory if transaction type == "income"
                 income_catagory and (catagory.__class__ == dict and catagory.get("others") == None or
-                catagory not in income().get_catagories()),
+                catagory.__class__ == str and catagory not in income().get_catagories()),
 
                 # Verifying catagory if transaction_type == "expense"
                 income_catagory == False and (catagory.__class__ == dict and catagory.get("others") == None or
-                catagory not in expense().get_catagories()),
+                catagory.__class__ == str and catagory not in expense().get_catagories()),
             ]
         ):
             raise Exception("0xetrn0011")
@@ -136,8 +136,8 @@ class manage:
                         transaction_type: str,
                         payment_mode: str,
                         catagory: Union[str, dict],
-                        time: date = None,
-                        date: time = None,
+                        time: datetime.time = None,
+                        date: datetime.date = None,
                         description: str = None) -> None:
         
         # Creating a unique transaction ID
@@ -147,8 +147,8 @@ class manage:
         try:
             entry: dict = {
                 "transaction_id": self.transaction_id,
-                "time_added": time(datetime.now().hour, datetime.now().minute),
-                "date_added": datetime.now(),
+                "time_added": datetime.time(datetime.datetime.now().hour, datetime.datetime.now().minute),
+                "date_added": datetime.date.today(),
                 "status": "cleared",
                 "amount": amount,
                 "transaction_type": transaction_type,
@@ -172,33 +172,47 @@ class manage:
         if transaction_id not in self.get_transactions_id():
             raise Exception("0xetrn0005")
 
+        # Accessing the transaction file, capturing the transaction and verifying it.
         try:
             with open("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, transaction_id), 'r') as file:
                 transaction: dict = eval(file.read().replace("\n",""))
             
-            if transaction not in self.get_transactions():
-                raise Exception
-            if transaction.get("status") not in ["cleared", "cancelled"]:
+            if transaction not in self.get_transactions() or transaction.get("status") not in pre_requisites.STATUS:
                 raise Exception
         except Exception:
             raise Exception("0xetrn0006")
 
+        # Changing the transaction's status
         trn_status: str = transaction.get("status")
         trn_status = "cleared" if trn_status == "cancelled" else "cancelled"
 
+        # Updating the transaction and saving it into the transaction file
         transaction.update({"status": trn_status})
-        self._write_transaction(transaction, exists = True)
+        self._write_transaction(transaction)
 
-    def delete_transaction(self, transactions_id: list) -> None:
-        if transactions_id.__class__ not in [list, tuple, set]:
+    def delete_transaction(self, transactions_id: Union[list[str], str]) -> None:
+        if transactions_id.__class__ not in [str, list]:
             raise Exception("0xetrn0012")
-        
+
+        transactions_id = transactions_id if transactions_id.__class__ == list else [transactions_id]
+
+        if transactions_id.__len__() > self.get_transactions_id().__len__():
+            raise Exception("0xetrn0012")
+
+        # List of transactions_id queued for deletion that exist, i.e., are valid.
+        valid_transactions_id = [i for i in transactions_id if i in self.get_transactions_id()]
+
+        # Deleting transaction files with related transactions_id.
         i: str
-        for i in transactions_id:
+        for i in valid_transactions_id:
             try:
                 os.remove("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, i))
             except Exception:
                 os.system("del \"%s\\trn_id_%s.txt\"" % (info.DATA_TRANSACTIONS, i))
+
+        # Raising error if one or more of the payment modes names provided are not existant.
+        if valid_transactions_id.__len__() != transactions_id.__len__():
+            raise Exception("0xetrn0013")
 
     def edit_transaction(self,
                         transaction_id: str,
@@ -206,11 +220,14 @@ class manage:
                         transaction_type: str = None,
                         payment_mode: str = None,
                         catagory = None,
-                        transaction_time: time = None,
-                        transaction_date: date = None,
+                        transaction_time: datetime.time = None,
+                        transaction_date: datetime.date = None,
                         description: str = None) -> None:
 
         edit: dict = {key: value for key, value in locals().items() if value != None and key not in ["self", "transaction_id"]}
+
+        if edit.__len__() == 0:
+            raise Exception("0xetrn0014")
 
         try:
             i: dict
@@ -225,7 +242,7 @@ class manage:
 
         content.update(edit)
         self._verify_transaction(content, exists = True)
-        self._write_transaction(content, exists = True)
+        self._write_transaction(content)
 
 class TroubleShoot:
     ...
