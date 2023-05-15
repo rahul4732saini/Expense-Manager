@@ -38,7 +38,7 @@ class Manage:
             if payment_modes.__class__ != list:
                 raise Exception
             
-            mode_names = [i.get("name") for i in payment_modes]
+            mode_names: list[str] = [i.get("name") for i in payment_modes]
         except Exception:
             raise Exception("0xepym0002")
         
@@ -53,6 +53,8 @@ class Manage:
             raise Exception("0xepym0012")
 
         # Verifying each payment mode dictionary in the list of payment modes.
+        index: int
+        element: dict
         for index, element in enumerate(payment_modes):
             try:
                 self._verify(element)
@@ -60,8 +62,8 @@ class Manage:
                 raise Exception("0xepym0002")
             
             # Rounding off the current balance value to the nearest 2 decimal places if it is a float value.
-            current_balance = payment_modes[index]["current_balance"]
-            payment_modes[index]["current_balance"] = round(current_balance, 2) if current_balance.__class__ == float else current_balance
+            initial_balance = payment_modes[index]["initial_balance"]
+            payment_modes[index]["initial_balance"] = round(initial_balance, 2) if initial_balance.__class__ == float else initial_balance
 
         return payment_modes
     
@@ -77,7 +79,7 @@ class Manage:
             [
                 mode.get("name").__class__ == str,
                 mode.get("catagory") in pre_requisites.PAYMENT_MODE_CATAGORIES,
-                mode.get("current_balance").__class__ in [int, float] and mode.get("current_balance") >= 0,
+                mode.get("initial_balance").__class__ in [int, float] and mode.get("initial_balance") >= 0,
                 mode.get("color") in pre_requisites.COLORS
             ]
         ) == False:
@@ -86,7 +88,7 @@ class Manage:
         if mode.get("name").__len__() > 25:
             raise Exception("0xepym0004")
 
-    def _write_file(self, payment_modes: list) -> None:
+    def _write_file(self, payment_modes: list[dict]) -> None:
         
         # Converting the list into a readable string format to be written in the payment modes data file.
         payment_modes = str(payment_modes).replace("{", "{\n").replace("}", "\n}").replace("[", "[\n").replace("]", "\n]").replace(", ", ",\n")
@@ -97,21 +99,21 @@ class Manage:
     def add_mode(self,
                  name: str,
                  catagory: str,
-                 current_balance: Union[int, float] = 0) -> None:
+                 initial_balance: Union[int, float] = 0) -> None:
         
         if self.get_modes().__len__() >= 30:
             raise Exception("0xepym0005")
 
-        color = random.choice(pre_requisites.COLORS)
+        color: str = random.choice(pre_requisites.COLORS)
 
-        entry = {
+        entry: dict = {
             "name": name,
             "color": color,
-            "current_balance": round(current_balance, 2) if current_balance.__class__ == float else current_balance,
+            "initial_balance": round(initial_balance, 2) if initial_balance.__class__ == float else initial_balance,
             "catagory": catagory
         }
 
-        payment_modes: list = self.get_modes()
+        payment_modes: list[dict] = self.get_modes()
         payment_modes.append(entry)
 
         # Only verifying the last payment mode dictionary as all others are already verified.
@@ -138,15 +140,15 @@ class Manage:
     def edit_mode(self,
                   current_name: str,
                   new_name: str = None,
-                  current_balance: Union[int ,float] = None,
+                  initial_balance: Union[int ,float] = None,
                   catagory: str = None) -> None:
-        name = new_name
+        name: str = new_name
 
         if name in self.get_mode_names():
             raise Exception("0xepym0010")
 
         # Dictionary of the edits to be updated in the payment mode.
-        edit = {key:value for key, value in locals().items() if key not in ["self", "current_name", "new_name"] and value != None}
+        edit: dict = {key:value for key, value in locals().items() if key not in ["self", "current_name", "new_name"] and value != None}
 
         if edit.__len__() == 0:
             raise Exception("0xepym0009")
@@ -163,11 +165,11 @@ class Manage:
         except Exception:
             raise Exception("0xepym0008")
 
-        if edit.get("current_balance") != None:\
+        if edit.get("initial_balance") != None:\
             # Rounding off the current balance value to the nearest 2 decimal places if it is a float value.
-            edit["current_balance"] = round(current_balance, 2) if current_balance.__class__ == float else current_balance
+            edit["initial_balance"] = round(initial_balance, 2) if initial_balance.__class__ == float else initial_balance
         
-        payment_modes = [i for i in self.get_modes() if i.get("name") != current_name]
+        payment_modes: list[dict] = [i for i in self.get_modes() if i.get("name") != current_name]
         content.update(edit)
         payment_modes.append(content)
 
