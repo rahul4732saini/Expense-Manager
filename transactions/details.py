@@ -9,6 +9,8 @@ This exports:
     get_transactions: return a list of all existing valid transactions dictionaries.
     add_transaction: used to create a new transaction.
     switch_transaction: used to switch transaction status between upcoming - cleared - cancelled.
+    delete_transaction: used to delete the transactions corresponding to the transactions ID provided as str or list
+    edit_transaction: used to edit the details of the transaction corresponding to the transaction ID provided.
 """
 
 try:
@@ -226,25 +228,29 @@ class manage:
                         transaction_date: datetime.date = None,
                         description: str = None) -> None:
 
+        # Dictionary of the edits to be updated in the transaction.
         edit: dict = {key: value for key, value in locals().items() if value != None and key not in ["self", "transaction_id"]}
 
         if edit.__len__() == 0:
             raise Exception("0xetrn0014")
 
+        # Iterates through the transactions and checks if a transaction exists with the provided transaction ID.
+        # raises an error if no corresponding transaction is found.
         try:
             i: dict
             for i in self.get_transactions():
                 if i.get("transaction_id") == transaction_id:
-                    content: dict = i
+                    transaction: dict = i
                     break
             else:
                 raise Exception
         except Exception:
             raise Exception("0xetrn0006")
 
-        content.update(edit)
-        self._verify_transaction(content, exists = True)
-        self._write_transaction(content)
+        # Updating the transaction, Verifying it and saving it to the transaction file. 
+        transaction.update(edit)
+        self._verify_transaction(transaction, exists = True)
+        self._write_transaction(transaction)
 
 class TroubleShoot:
     ...
