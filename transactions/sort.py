@@ -10,6 +10,3 @@ class transactions:
 
     def sort(self) -> list:
         ...
-
-import os
-os.mkdir("E:\\new")
