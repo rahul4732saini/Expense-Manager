@@ -27,14 +27,16 @@ ERROR = {
             "0xetrn0002": "Files with unexpected extension found in the save folder.",
             "0xetrn0003": "Corrupted transaction files found in the save folder.",
             "0xetrn0004": "Transactions save folder not found.",
-            "0xetrn0005": "Transaction file not found.",
+            "0xetrn0005": "The proivided transaction ID is invalid.",
             "0xetrn0006": "Cannot continue the process as the file is corrupted",
-            "0xetrn0007": "There was an error in creating the transaction ID.",
-            "0xetrn0008": "Unexpected arguments provided for editing transactions.",
+            "0xetrn0007": "There was an error in creating the transaction.",
+            "0xetrn0008": "There was an error in verifying the transaction.",
             "0xetrn0009": "Unexpected arguments detected while creating transactions.",
-            "0xetrn0010": "There was an error in fetching the transaction files.",
+            "0xetrn0010": "There was an error in capturing the transaction files.",
             "0xetrn0011": "The provided catagory is not valid.",
-            "0xetrn0012": "Unexpected arguments detected for transaction deletion."
+            "0xetrn0012": "Unexpected arguments detected for transaction deletion.",
+            "0xetrn0013": "One or more of the transactions queued for deletion do not exist.",
+            "0xetrn0014": "No arguments were provided for editing the transactions."
         },
         "export":{
             "0xetrn0ex1": "One or more provided transaction files cannot be found in the save folder.",
