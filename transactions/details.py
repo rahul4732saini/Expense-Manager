@@ -17,6 +17,7 @@ try:
     from sys import path
     path.append("..\\Expense Manager")
     
+    import re
     import os
     import random
     import datetime
