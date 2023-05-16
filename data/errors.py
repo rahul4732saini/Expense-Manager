@@ -16,12 +16,14 @@ ERROR = {
             "0xecat0004": "Provided catagory name is not valid.",
             "0xecat0005": "The process cannot continue as one or more of the catagories provided do not exist.",
             "0xecat0006": "All income catagories cannot be removed.",
-            "0xecat0007": "The datatype of the catagories sequence cannot be resolved.",
+            "0xecat0007": "Unexpected arguments provided for catagory deletion.",
             "0xecat0008": "Cannot edit the catagory as there was an error finding the catagory details.",
             "0xecat0009": "Cannot use the provided catagory name as a catagory with similar name already exists.",
             "0xecat0010": "Expense Catagories file not found.",
-            "0xecat0011": "Corrupted arguments detected while Catagories inspection.",
-            "0xecat0012": "Expense Catagories file found to be corrupted."
+            "0xecat0011": "Unexpected arguments detected while capturing catagories.",
+            "0xecat0012": "Expense Catagories file found to be corrupted.",
+            "0xecat0013": "The income catagories data file exceeds the limit of catagories that can be stored (50).",
+            "0xecat0014": "The expense catagories data file exceeds the limit of catagories that can be stored (50)."
         },
         "details":{
             "0xetrn0001": "Unexpected files found in the transactions save folder.",

@@ -41,11 +41,9 @@ class Manage:
             mode_names: list[str] = [i.get("name") for i in payment_modes]
         except Exception:
             raise Exception("0xepym0002")
-        
-        length_limit_exceed: bool = payment_modes.__len__() > 30
 
         # Checking if the number of payment modes exceed the limit of 30.
-        if length_limit_exceed:
+        if payment_modes.__len__() > 30:
             raise Exception("0xepym0011")
         
         # Checking for duplicate payment mode names
@@ -200,4 +198,7 @@ class TroubleShoot:
         ...
 
     def er_0xepym0011(self):
+        ...
+
+    def er_0xepym0012(self):
         ...
