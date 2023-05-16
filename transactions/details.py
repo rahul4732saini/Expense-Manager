@@ -49,13 +49,16 @@ class manage:
         return [i[7:i.rfind(".")] for i in transaction_files]
 
     def _create_transaction_id(self) -> None:
+        # The max length of the ID is 10 digits.
         transaction_id: str = str(random.randrange(1,10**10))
         
+        # While loop is called to define another ID if the ID generated already exists.
         while transaction_id in self.get_transactions_id():
             transaction_id: str = str(random.randrange(1,10**10))
 
+        # Changes the length of the ID by adding 0s if the length is less than 10.
         transaction_id = "%s%s" % ("0"*(10-transaction_id.__len__()),transaction_id) if transaction_id.__len__() < 10 else transaction_id
-        self.transaction_id: str = transaction_id
+        self._transaction_id: str = transaction_id
 
     def _verify_transaction(self, trn: dict, exists: bool) -> None:
         # transaction_dictionary as namespace trn
@@ -143,22 +146,22 @@ class manage:
         thread = Thread(self._create_transaction_id(), daemon = True)
         thread.start()
 
-        try:
-            entry: dict = {
-                "transaction_id": self.transaction_id,
-                "time_added": datetime.time(datetime.datetime.now().hour, datetime.datetime.now().minute),
-                "date_added": datetime.date.today(),
-                "status": "cleared",
-                "amount": amount,
-                "transaction_type": transaction_type,
-                "payment_mode": payment_mode,
-                "catagory": catagory,
-                "transaction_time": time,
-                "transaction_date": date,
-                "description": description
-            }
-        except Exception:
+        if hasattr(self, "_transaction_id") == False:
             raise Exception("0xetrn0007")
+        
+        entry: dict = {
+            "transaction_id": self._transaction_id,
+            "time_added": datetime.time(datetime.datetime.now().hour, datetime.datetime.now().minute),
+            "date_added": datetime.date.today(),
+            "status": "cleared",
+            "amount": amount,
+            "transaction_type": transaction_type,
+            "payment_mode": payment_mode,
+            "catagory": catagory,
+            "transaction_time": time,
+            "transaction_date": date,
+            "description": description
+        }
 
         if os.path.exists(info.DATA_TRANSACTIONS) == False:
             raise Exception("0xetrn0004")
