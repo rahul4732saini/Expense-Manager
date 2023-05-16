@@ -60,7 +60,6 @@ class manage:
     def _verify_transaction(self, trn: dict, exists: bool) -> None:
         # transaction_dictionary as namespace trn
 
-
         if all(
             [
                 # Verifying transaction_ID
