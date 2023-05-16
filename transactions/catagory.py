@@ -1,3 +1,21 @@
+r"""
+Module related to functions required for the
+management and troubleshooting of catagories (income / expense)
+used in transactions and budgets.
+
+This exports:
+
+(Class) Income:
+-   get_catagories: returns a dictionary of all the catagory names and their colors.
+-   add_catagory: used to create a new catagory.
+-   remove_catagory: used to remove the catagories corresponding to the catagory name(s) provided as str / list.
+-   edit_catagory: used to edit the name of the catagory.
+
+(Class) Expense:
+-   ** Subclass of Income **.
+-   ** Same functions as of Income **
+"""
+
 try:    
     from sys import path
     path.append("..\\Expense Manager")
@@ -10,7 +28,7 @@ try:
 except Exception:
     raise Exception("0xegbl0001")
 
-class income:
+class Income:
     def __init__(self):
         self.file = self.__class__.__name__
 
@@ -31,10 +49,10 @@ class income:
             if catagories.__class__ != dict:
                 raise Exception
         except:
-            raise Exception("0xecat0003") if self.file == "income" else Exception("0xecat0012")
+            raise Exception("0xecat0003") if self.file == "income" else Exception("0xecat0011")
 
         if catagories.__len__() > 50:
-            raise Exception("0xecat0013") if self.file == "income" else Exception("0xecat0014")
+            raise Exception("0xecat0012") if self.file == "income" else Exception("0xecat0013")
 
         # Verifying the catagory file details.
         if not all([key.__class__ == str and value in pre_requisites.COLORS for key, value in catagories.items()]):
@@ -64,20 +82,26 @@ class income:
         catagories.update({catagory_name: random.choice(pre_requisites.COLORS)})
         self._write_catagory(catagories)
 
-    def remove_catagories(self, catagories: Union[list[str], str]) -> None:
+    def remove_catagory(self, catagories: Union[str, list[str]]) -> None:
         if catagories.__class__ not in [list, str]:
             raise Exception("0xecat0007")
         
         catagories = catagories if catagories.__class__ == list else [catagories]
 
-        if all([i in list(self.get_catagories().keys()) for i in catagories]) == False:
-            raise Exception("0xecat0005")
+        # List of catagory names that exist, i.e, are valid.
+        valid_catagories: list[str] = [i for i in catagories if i in self.get_catagories().keys()]
         
-        if len(catagories) == len(self.get_catagories().keys()):
+        # Raising error if prompted to remove all catagories.
+        if len(valid_catagories) == len(self.get_catagories().keys()):
             raise Exception("0xecat0006")
         
-        catagories:dict = {i:j for i,j in self.get_catagories().items() if i not in catagories}
-        self._write_catagory(catagories)
+        # Updating the dictionary with catagories not present in the valid catagories and saving it to the catagories file.
+        target: dict = {key: value for key, value in self.get_catagories().items() if key not in valid_catagories}
+        self._write_catagory(target)
+
+        # Raising an error if invalid catagory names were provided as arguments.
+        if len(catagories) != len(valid_catagories):
+            raise Exception("0xecat0005")
 
     def edit_catagory(self, old_catagroy_name:str, new_catagory_name:str) -> None:
         if old_catagroy_name not in self.get_catagories().keys():
@@ -92,11 +116,12 @@ class income:
         catagories:dict = self.get_catagories()
         catagory_color:str = catagories.get(old_catagroy_name)
 
+        # Removing the old catagory, adding the new edited one and saving it to the catagories file.
         catagories.pop(old_catagroy_name)
-        catagories.update({new_catagory_name:catagory_color})
+        catagories.update({new_catagory_name: catagory_color})
         self._write_catagory(catagories)
 
-class expense(income):
+class Expense(Income):
     def __init__(self):
         super().__init__()
 
@@ -106,8 +131,15 @@ class expense(income):
     def add_catagory(self, catagory_name: str) -> None:
         super().add_catagory(catagory_name)
     
-    def remove_catagories(self, catagories: list) -> None:
-        super().remove_catagories(catagories)
+    def remove_catagory(self, catagories: Union[str, list[str]]) -> None:
+        super().remove_catagory(catagories)
     
     def edit_catagory(self, old_catagroy_name: str, new_catagory_name: str) -> None:
         super().edit_catagory(old_catagroy_name, new_catagory_name)
+
+class TroubleShoot:
+    # The following return True if fixed else False if the problem isn't fixed.
+    # Mention to the data.errors file for more information about the errors.
+
+    # To be continued...
+    ...

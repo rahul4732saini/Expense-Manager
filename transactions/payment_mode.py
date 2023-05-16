@@ -5,11 +5,11 @@ management and troubleshooting of payment modes.
 This exports:
 
 (Class) Manage:
-    get_modes: return all the existing payment modes dictionaries.
-    get_mode_name: returns all the names of the existing payment modes.
-    add_mode: used to add a new payment mode.
-    delete_mode: used for deleting payment modes. Takes payment mode names as arguments within a list.
-    edit_mode: used for editing a payment mode's details.
+-   get_modes: return all the existing payment modes dictionaries.
+-   get_mode_name: returns all the names of the existing payment modes.
+-   add_mode: used to add a new payment mode.
+-   delete_mode: used for deleting payment modes. Takes payment mode names as arguments within a list.
+-   edit_mode: used for editing a payment mode's details.
 """
 
 try:
@@ -42,7 +42,6 @@ class Manage:
         except Exception:
             raise Exception("0xepym0002")
 
-        # Checking if the number of payment modes exceed the limit of 30.
         if payment_modes.__len__() > 30:
             raise Exception("0xepym0011")
         
@@ -128,7 +127,7 @@ class Manage:
         # List of payment mode names queued for deletion that exist, i.e., are valid.
         valid_mode_names: list = [i.get("name") for i in self.get_modes() if i.get("name") in (mode_names if mode_names.__class__ == list else [mode_names])]
 
-        # Checking if all the payment modes queued for deletion exist.
+        # Raising an error if all payment modes are queued for deletion.
         if valid_mode_names.__len__() == self.get_mode_names().__len__():
             raise Exception("0xepym0006")
         
@@ -156,7 +155,7 @@ class Manage:
         if edit.__len__() == 0:
             raise Exception("0xepym0009")
         
-        # Fetching the dictionary with the name to edited.
+        # Capturing the dictionary with the name to edited.
         try:
             i: dict
             for i in self.get_modes():
@@ -202,3 +201,5 @@ class TroubleShoot:
 
     def er_0xepym0012(self):
         ...
+
+    # To be continued...

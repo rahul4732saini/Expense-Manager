@@ -5,19 +5,18 @@ management and troubleshooting of transacvtions.
 This exports:
 
 (Class) Manage:
-    get_transactions_id: returns the ID of the transactions as strings.
-    get_transactions: return a list of all existing valid transactions dictionaries.
-    add_transaction: used to create a new transaction.
-    switch_transaction: used to switch transaction status between upcoming - cleared - cancelled.
-    delete_transaction: used to delete the transactions corresponding to the transactions ID provided as str or list
-    edit_transaction: used to edit the details of the transaction corresponding to the transaction ID provided.
+-   get_transactions_id: returns the ID of the transactions as strings.
+-   get_transactions: return a list of all existing valid transactions dictionaries.
+-   add_transaction: used to create a new transaction.
+-   switch_transaction: used to switch transaction status between upcoming - cleared - cancelled.
+-   delete_transaction: used to delete the transactions corresponding to the transactions ID provided as str / list
+-   edit_transaction: used to edit the details of the transaction corresponding to the transaction ID provided.
 """
 
 try:
     from sys import path
     path.append("..\\Expense Manager")
     
-    import re
     import os
     import random
     import datetime
@@ -26,7 +25,7 @@ try:
     from threading import Thread
     import payment_mode as pay_mode
     from common.directory import indexer
-    from catagory import income, expense
+    from catagory import Income, Expense
     import data.pre_requisites as pre_requisites
 except Exception:
     raise Exception("0xegbl0001")
@@ -99,11 +98,11 @@ class Manage:
             [   
                 # Verifying catagory if transaction type == "income"
                 income_catagory and (catagory.__class__ == dict and catagory.get("others") == None or
-                catagory.__class__ == str and catagory not in income().get_catagories()),
+                catagory.__class__ == str and catagory not in Income().get_catagories()),
 
                 # Verifying catagory if transaction_type == "expense"
                 not income_catagory and (catagory.__class__ == dict and catagory.get("others") == None or
-                catagory.__class__ == str and catagory not in expense().get_catagories()),
+                catagory.__class__ == str and catagory not in Expense().get_catagories()),
             ]
         ):
             raise Exception("0xetrn0009")

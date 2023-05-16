@@ -5,13 +5,13 @@ of PDF / CSV.
 This exports:
 
 (Class) Transactions:
-    to_CSV: converts the transactions into a CSV file.
-    to_PDF: converts the transactions provided into a PDF file."""
+-   to_CSV: converts the transactions into a CSV file.
+-   to_PDF: converts the transactions provided into a PDF file."""
 
 try:
     from sys import path
     path.append("..\\Expense Manager")
-    
+
     import pandas
     import os.path
     from details import Manage
