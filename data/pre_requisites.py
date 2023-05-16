@@ -1,4 +1,4 @@
-COLORS = [
+COLORS = (
     "red",
     "blue",
     "lightgreen",
@@ -15,7 +15,7 @@ COLORS = [
     "navy",
     "aquamarine",
     "maroon"
-]
+)
 
 WEEK_DAYS = {
     0:"sunday",
@@ -27,7 +27,7 @@ WEEK_DAYS = {
     6:"satursday"
 }
 
-TRANSACTION_KEYS = [
+TRANSACTION_KEYS = (
     "transaction_id",
     "date_added",
     "time_added",
@@ -39,27 +39,27 @@ TRANSACTION_KEYS = [
     "transaction_time",
     "transaction_date",
     "description"
-]
+)
 
-TRANSACTION_TYPES = [
+TRANSACTION_TYPES = (
     "income",
     "expense"
-]
+)
 
-STATUS = [
+STATUS = (
     "cleared",
     "cancelled",
     "upcoming"
-]
+)
 
-CATAGORY_FILES = [
+CATAGORY_FILES = (
     "income.txt",
     "expense.txt"
-]
+)
 
-PAYMENT_MODE_CATAGORIES = [
+PAYMENT_MODE_CATAGORIES = (
     "bank_account",
     "wallet",
     "credit_card",
     "debit_card"
-]
+)

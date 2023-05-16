@@ -1,7 +1,7 @@
 from sys import path
 path.append("..\\Expense Manager")
 
-from details import manage
+from details import Manage
 from catagory import income, expense
 
 class transactions:
@@ -10,3 +10,6 @@ class transactions:
 
     def sort(self) -> list:
         ...
+
+import os
+os.mkdir("E:\\new")

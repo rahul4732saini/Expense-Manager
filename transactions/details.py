@@ -30,7 +30,7 @@ try:
 except Exception:
     raise Exception("0xegbl0001")
 
-class manage:
+class Manage:
     def get_transactions_id(self) -> list[str]:
 
         # Capturing transaction files from the transactions data folder.
@@ -42,7 +42,7 @@ class manage:
         # Verifying the names of the transaction files.
         i: str
         for i in transaction_files:
-            if i.__len__() != 21 or i[:7] != "trn_id_" or i[7:i.rfind(".")].isdigit() == False:
+            if i.__len__() != 21 or i[:7] != "trn_id_" or i[7:17].isdigit() == False:
                 raise Exception("0xetrn0001")
             if i.removesuffix(".txt") == i:
                 raise Exception("0xetrn0002")
@@ -65,7 +65,7 @@ class manage:
     def _verify_transaction(self, trn: dict, exists: bool) -> None:
         # transaction_dictionary as namespace trn
 
-        if all(
+        if not all(
             [
                 # Verifying transaction_ID
                 trn.get("transaction_id") in self.get_transactions_id() if exists
@@ -88,7 +88,7 @@ class manage:
                 # Verifying description
                 trn.get("description") == None or trn.get("description").__class__ == str and trn.get("description").__len__() <= 100
             ]
-        ) == False:
+        ):
             raise Exception("0xetrn0008")
 
         catagory: Union[str,dict] = trn.get("catagory")
@@ -101,11 +101,11 @@ class manage:
                 catagory.__class__ == str and catagory not in income().get_catagories()),
 
                 # Verifying catagory if transaction_type == "expense"
-                income_catagory == False and (catagory.__class__ == dict and catagory.get("others") == None or
+                not income_catagory and (catagory.__class__ == dict and catagory.get("others") == None or
                 catagory.__class__ == str and catagory not in expense().get_catagories()),
             ]
         ):
-            raise Exception("0xetrn0011")
+            raise Exception("0xetrn0009")
 
     def get_transactions(self) -> list[dict]:
         transaction_files: list[str] = self.get_transactions_id()
@@ -148,7 +148,7 @@ class manage:
         thread = Thread(self._create_transaction_id(), daemon = True)
         thread.start()
 
-        if hasattr(self, "_transaction_id") == False:
+        if not hasattr(self, "_transaction_id"):
             raise Exception("0xetrn0007")
         
         entry: dict = {
@@ -165,7 +165,7 @@ class manage:
             "description": description
         }
 
-        if os.path.exists(info.DATA_TRANSACTIONS) == False:
+        if not os.path.exists(info.DATA_TRANSACTIONS):
             raise Exception("0xetrn0004")
 
         # Verifying and saving the transaction into a file.
@@ -196,12 +196,12 @@ class manage:
 
     def delete_transaction(self, transactions_id: Union[list[str], str]) -> None:
         if transactions_id.__class__ not in [str, list]:
-            raise Exception("0xetrn0012")
+            raise Exception("0xetrn0010")
 
         transactions_id = transactions_id if transactions_id.__class__ == list else [transactions_id]
 
         if transactions_id.__len__() > self.get_transactions_id().__len__():
-            raise Exception("0xetrn0012")
+            raise Exception("0xetrn0010")
 
         # List of transactions_id queued for deletion that exist, i.e., are valid.
         valid_transactions_id = [i for i in transactions_id if i in self.get_transactions_id()]
@@ -216,7 +216,7 @@ class manage:
 
         # Raising error if one or more of the payment modes names provided are not existant.
         if valid_transactions_id.__len__() != transactions_id.__len__():
-            raise Exception("0xetrn0013")
+            raise Exception("0xetrn0011")
 
     def edit_transaction(self,
                         transaction_id: str,
@@ -232,7 +232,7 @@ class manage:
         edit: dict = {key: value for key, value in locals().items() if value != None and key not in ["self", "transaction_id"]}
 
         if edit.__len__() == 0:
-            raise Exception("0xetrn0014")
+            raise Exception("0xetrn0012")
 
         # Iterates through the transactions and checks if a transaction exists with the provided transaction ID.
         # raises an error if no corresponding transaction is found.
@@ -253,4 +253,58 @@ class manage:
         self._write_transaction(transaction)
 
 class TroubleShoot:
-    ...
+    # The following return True if fixed else False if the problem isn't fixed.
+    # Mention to the data.errors file for more information about the errors.
+
+    def _verify_transaction_file_name(self, file_name: str) -> bool:
+
+        # Verifying the file name
+        return True if \
+        file_name.__len__() == 21 and \
+        file_name[:7] == "trn_id_" and \
+        file_name[7:17].isdigit() and \
+        file_name[17:] == ".txt" \
+        else False
+
+    def er_0xetrn0001(self) -> bool:
+
+        # Capturing the names of the files present in the transactions data folder.
+        try:
+            transaction_files: list[str] = indexer(info.DATA_TRANSACTIONS).get_files()
+        except Exception:
+            raise Exception("0xetrn0004")
+        
+        valid_files: list[str] = [i for i in transaction_files if self._verify_transaction_file_name(i)]
+        invalid_files: list[str] = [i for i in transaction_files if i not in valid_files]
+
+        if invalid_files.__len__() == 0:
+            return True
+        
+        # To be continued...
+        
+    def er_0xetrn0002(self):
+        self.er_0xetrn0001()
+
+    def er_0xetrn0003(self):
+        ...
+
+    def er_0xetrn0004(self):
+        ...
+
+    def er_0xetrn0006(self) -> bool:
+        if os.path.exists(info.DATA_TRANSACTIONS):
+            return True
+        else:
+            if not os.path.exists(info.DATA_PATH):
+                raise Exception("0xegbl0002")
+            
+        # Creating the transactions data folder.
+        try:
+            os.mkdir(info.DATA_TRANSACTIONS)
+        except Exception:
+            os.system("mkrdir \"%s\"" % info.DATA_TRANSACTIONS)
+
+        if os.path.exists(info.DATA_TRANSACTIONS):
+            return True
+        else:
+            return False

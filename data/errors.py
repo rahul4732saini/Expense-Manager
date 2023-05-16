@@ -1,6 +1,7 @@
 ERROR = {
     "__global__":{
-        "0xegbl0001": "One or more of the required modules are missing."
+        "0xegbl0001": "One or more of the required modules are missing.",
+        "0xegbl0002": "The data folder was not found."
     },
     "common":{
         "directory":{
@@ -31,15 +32,13 @@ ERROR = {
             "0xetrn0006": "Cannot continue the process as the file is corrupted",
             "0xetrn0007": "There was an error in creating the transaction.",
             "0xetrn0008": "There was an error in verifying the transaction.",
-            "0xetrn0009": "Unexpected arguments detected while creating transactions.",
-            "0xetrn0010": "There was an error in capturing the transaction files.",
-            "0xetrn0011": "The provided catagory is not valid.",
-            "0xetrn0012": "Unexpected arguments detected for transaction deletion.",
-            "0xetrn0013": "One or more of the transactions queued for deletion do not exist.",
-            "0xetrn0014": "No arguments were provided for editing the transactions."
+            "0xetrn0009": "The provided catagory is not valid.",
+            "0xetrn0010": "Unexpected arguments detected for transaction deletion.",
+            "0xetrn0011": "One or more of the transactions queued for deletion do not exist.",
+            "0xetrn0012": "No arguments were provided for editing the transactions."
         },
         "export":{
-            "0xetrn0ex1": "One or more provided transaction files cannot be found in the save folder.",
+            "0xetrn0ex1": "One or more provided transaction files do not exist.",
             "0xetrn0ex2": "The provided save location for the export file cannot be found.",
             "0xetrn0ex3": "No proper name provided for the export file.",
             "0xetrn0ex4": "Cannot continue the process as one or more of the target transaction files are corrupted."
