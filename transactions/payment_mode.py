@@ -104,6 +104,9 @@ class Manage:
         if self.get_modes().__len__() >= 30:
             raise Exception("0xepym0005")
 
+        if name in self.get_mode_names():
+            raise Exception("0xepym0010")
+
         color: str = random.choice(pre_requisites.COLORS)
 
         entry: dict = {
@@ -120,10 +123,12 @@ class Manage:
         self._verify(payment_modes[-1])
         self._write_file(payment_modes)
 
-    def delete_mode(self, mode_names: list[str]) -> None:
+    def delete_mode(self, mode_names: Union[str, list[str]]) -> None:
+        if mode_names.__class__ not in [list, str]:
+            raise Exception("0xepym0013")
 
         # List of payment mode names queued for deletion that exist, i.e., are valid.
-        valid_mode_names: list = [i.get("name") for i in self.get_modes() if i.get("name") in mode_names]
+        valid_mode_names: list = [i.get("name") for i in self.get_modes() if i.get("name") in (mode_names if mode_names.__class__ == list else [mode_names])]
 
         # Checking if all the payment modes queued for deletion exist.
         if valid_mode_names.__len__() == self.get_mode_names().__len__():
@@ -134,7 +139,7 @@ class Manage:
         self._write_file(payment_modes)
 
         # Raising error if one or more of the payment modes names provided are not existant.
-        if mode_names.__len__() != valid_mode_names.__len__():
+        if (mode_names if mode_names.__class__ == list else [mode_names]).__len__() != valid_mode_names.__len__():
             raise Exception("0xepym0007")
 
     def edit_mode(self,

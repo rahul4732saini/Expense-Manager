@@ -57,7 +57,8 @@ ERROR = {
             "0xepym0009": "No arguments were provided for editing the payment mode.",
             "0xepym0010": "Cannot use the provided payment mode name as a payment mode with similar name already exists.",
             "0xepym0011": "The payment mode data file exceeds the limit of payment modes that can be stored (30).",
-            "0xepym0012": "Duplicate payment modes were found in the data folder."
+            "0xepym0012": "Duplicate payment modes were found in the data folder.",
+            "0xepym0013": "Invalid arguments provided for payment modes deletion."
         }
     },
     "budgets":{
