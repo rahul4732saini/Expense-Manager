@@ -1,6 +1,6 @@
 r"""
 Module related to functions required for the
-management and troubleshooting of transacvtions.
+management and troubleshooting of transactions.
 
 This exports:
 
