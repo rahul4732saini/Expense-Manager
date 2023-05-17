@@ -71,7 +71,7 @@ class Manage:
                 trn.get("transaction_id") in self.get_transactions_id() if exists
                 else trn.get("transaction_id").__class__ == str and trn.get("transaction_id").__len__() == 10 and trn.get("transaction_id").isdigit(),
 
-                # Verifying date_added
+                # Verifying date_added & time_added
                 trn.get("date_added").__class__ == datetime.date and trn.get("date_added").year in range(1980, datetime.datetime.now().year+1),
                 trn.get("time_added").__class__ == datetime.time,
 
@@ -81,9 +81,9 @@ class Manage:
                 trn.get("payment_mode") in pay_mode.Manage().get_mode_names(), # Verifying payment_mode
                 trn.get("catagory").__class__ in [str, dict], # Verifying catagory
 
-                # Verifying transaction_time & transaction_time
-                trn.get("transaction_time").__class__ in [None, datetime.time],
-                trn.get("transaction_date") == None or trn.get("transaction_date").__class__ == datetime.date and trn.get("transaction_date").year in range(1980, 2100),
+                # Verifying transaction_datetime
+                trn.get("transaction_datetime") == None or trn.get("transaction_datetime").__class__ == datetime.datetime and
+                trn.get("transaction_datetime").year in range(1980, 2100),
 
                 # Verifying description
                 trn.get("description") == None or trn.get("description").__class__ == str and trn.get("description").__len__() <= 100
@@ -140,8 +140,7 @@ class Manage:
                         transaction_type: str,
                         payment_mode: str,
                         catagory: Union[str, dict],
-                        time: datetime.time = None,
-                        date: datetime.date = None,
+                        transaction_datetime: datetime.datetime = None,
                         description: str = None) -> None:
         
         # Creating a unique transaction ID
@@ -160,8 +159,7 @@ class Manage:
             "transaction_type": transaction_type,
             "payment_mode": payment_mode,
             "catagory": catagory,
-            "transaction_time": time,
-            "transaction_date": date,
+            "transaction_datetime": transaction_datetime,
             "description": description
         }
 
@@ -224,8 +222,7 @@ class Manage:
                         transaction_type: str = None,
                         payment_mode: str = None,
                         catagory = None,
-                        transaction_time: datetime.time = None,
-                        transaction_date: datetime.date = None,
+                        transaction_datetime: datetime.datetime = None,
                         description: str = None) -> None:
 
         # Dictionary of the edits to be updated in the transaction.

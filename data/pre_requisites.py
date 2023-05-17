@@ -34,10 +34,9 @@ TRANSACTION_KEYS = (
     "status",
     "amount",
     "transaction_type",
-    "transaction_mode",
+    "payment_mode",
     "catagory",
-    "transaction_time",
-    "transaction_date",
+    "transaction_datetime",
     "description"
 )
 
