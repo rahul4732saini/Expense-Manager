@@ -1,7 +1,10 @@
-from sys import path
-path.append("..\\Expense Manager")
+try:
+    from sys import path
+    path.append("..\\Expense Manager")
 
-from details import Manage
+    from details import Manage
+except Exception:
+    raise Exception("0xegbl0001")
 
 class Sort:
 
