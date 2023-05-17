@@ -45,7 +45,8 @@ ERROR = {
             "0xetrn0ex4": "Cannot continue the process as one or more of the target transaction files are corrupted."
         },
         "analysis":{
-            "0xetrn01an": "Invalid arguments detected while analysing transactions."
+            "0xetrn01an": "Invalid arguments detected while analysing transactions.",
+            "0xetrn02an": "Class attributes must not be changed from their default values."
         },
         "payment_mode":{
             "0xepym0001": "Payment Modes file cannot be found.",

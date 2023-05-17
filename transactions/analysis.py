@@ -3,8 +3,8 @@ try:
     path.append("..\\Expense Manager")
 
     from datetime import date
-    from typing import Union
     from details import Manage
+    from typing import Union, Any
 except Exception:
     raise Exception("0xegbl0001")
 
@@ -15,6 +15,15 @@ class TransactionNumber:
 class StatusIncome:
     def __init__(self):
         self.transaction_type = "income" if "Income" in self.__class__.__name__ else "expense"
+
+    def __setattr__(self, name: str, value: Any) -> Exception:
+        if name not in ["transaction_type", "day", "month", "year"]:
+            raise Exception("none")
+
+        if name == "transaction_type" and value != ("income" if "Income" in self.__class__.__name__ else "expense"):
+            raise Exception("0xetrn02an")
+
+        return super().__setattr__(name, value)
 
     def _verify_arguments(self,
                           year,
@@ -76,6 +85,12 @@ class StatusExpense(StatusIncome):
         return super().day(day, month, year)
     
 class Balance:
+    def __setattr__(self, name: str, value: Any) -> Any:
+        if name not in ["year", "month", "day"]:
+            raise Exception("none")
+        
+        return super().__setattr__(name, value)
+
     def lifetime(self) -> Union[int, float]:
         return StatusIncome().lifetime() - StatusExpense().lifetime()
     
