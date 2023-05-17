@@ -43,8 +43,8 @@ class Transactions:
             raise Exception("m")
 
         match name:
-            case "transaction_id":
-                if not all([i in Manage().get_transactions_id() for i in value]):
+            case "transactions_id":
+                if value.__class__ != list or not all([i in Manage().get_transactions_id() for i in value]):
                     raise Exception("0xetrn0ex1")
             
             case "save_location":

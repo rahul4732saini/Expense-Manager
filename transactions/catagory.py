@@ -23,7 +23,7 @@ try:
     import random
     import os.path
     import data.info as info
-    from typing import Union
+    from typing import Union, Any
     import data.pre_requisites as pre_requisites
 except Exception:
     raise Exception("0xegbl0001")
@@ -31,6 +31,14 @@ except Exception:
 class Income:
     def __init__(self):
         self.file = self.__class__.__name__
+
+    def __setattr__(self, name: str, value: Any):
+
+        # Raising an error if the name of the file to be accessed is altered.
+        if name == "file" and value != self.__class__.__name__:
+            raise Exception("0xegbl0003")
+        
+        return super().__setattr__(name, value)
 
     def get_catagories(self) -> dict:
 

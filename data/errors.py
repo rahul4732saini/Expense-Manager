@@ -1,7 +1,8 @@
 ERROR = {
     "__global__":{
         "0xegbl0001": "One or more of the required modules are missing.",
-        "0xegbl0002": "The data folder was not found."
+        "0xegbl0002": "The data folder was not found.",
+        "0xegbl0003": "Class attributes must not be changed from their default values."
     },
     "common":{
         "directory":{
@@ -46,7 +47,6 @@ ERROR = {
         },
         "analysis":{
             "0xetrn01an": "Invalid arguments detected while analysing transactions.",
-            "0xetrn02an": "Class attributes must not be changed from their default values."
         },
         "payment_mode":{
             "0xepym0001": "Payment Modes file cannot be found.",

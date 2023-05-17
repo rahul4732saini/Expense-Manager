@@ -5,38 +5,54 @@ try:
     from datetime import date
     from details import Manage
     from typing import Union, Any
+    from abc import ABC, abstractmethod
 except Exception:
     raise Exception("0xegbl0001")
 
-class TransactionNumber:
-    def _get_transactions(self):
-        return [i for i in Manage().get_transactions() if i .get("transaction_date") != None]
+class Status(ABC):
 
-class StatusIncome:
+    @abstractmethod
+    def lifetime(self):
+        ...
+
+    @abstractmethod
+    def year(self):
+        ...
+
+    @abstractmethod
+    def month(self):
+        ...
+
+    @abstractmethod
+    def day(self):
+        ...
+
+class StatusIncome(Status):
     def __init__(self):
         self.transaction_type = "income" if "Income" in self.__class__.__name__ else "expense"
 
-    def __setattr__(self, name: str, value: Any) -> Exception:
-        if name not in ["transaction_type", "day", "month", "year"]:
-            raise Exception("none")
-
+    def __setattr__(self, name: str, value: Any):
         if name == "transaction_type" and value != ("income" if "Income" in self.__class__.__name__ else "expense"):
-            raise Exception("0xetrn02an")
+            raise Exception("0xegbl0003")
 
         return super().__setattr__(name, value)
 
-    def _verify_arguments(self,
-                          year,
-                          month = None,
-                          day = None) -> None:
-        try:
-            if (year not in range(1980, 2100)) and (month != None or month not in range(1, 13)):
-                raise Exception
-        
-            if day != None:
-                date(year, month, day)
-        except:
-            raise Exception("0xetrn01an")
+    def _verify_arguments(self, function):
+        def wrapper(year,
+                    month = None,
+                    day = None):
+            try:
+                if (year not in range(1980, 2100)) and (month != None and month not in range(1, 13)):
+                    raise Exception
+                
+                if day != None:
+                    date(year, month, day)
+            except Exception:
+                raise Exception("0xetrn01an")
+            
+            function()
+
+        return wrapper
 
     def _get_transactions(self):
         return [i for i in Manage().get_transactions() if i.get("transaction_date") != None and i["transaction_type"] == self.transaction_type]
@@ -44,26 +60,24 @@ class StatusIncome:
     def lifetime(self) -> Union[int, float]:
         return sum([i["amount"] for i in self._get_transactions()])
     
+    @_verify_arguments
     def year(self, year = date.today().year) -> Union[int, float]:
-        self._verify_arguments(year = year)
         return sum([i["amount"] for i in self._get_transactions() if i["transaction_date"].year == year])
     
+    @_verify_arguments
     def month(self,
               month = date.today().month,
               year = date.today().year) -> Union[int, float]:
-        
-        self._verify_arguments(year = year, month = month)
         return sum([i["amount"] for i in self._get_transactions() if i["transaction_date"].year == year and i["transaction_date"].month == month])
     
+    @_verify_arguments
     def day(self,
             day = date.today().day,
             month = date.today().month,
             year = date.today().year) -> Union[str, float]:
-        
-        self._verify_arguments(year = year, month = month, day = day)
         return sum([i["amount"] for i in self._get_transactions() if i["transaction_date"] == date(year, month, day)])
     
-class StatusExpense(StatusIncome):
+class StatusExpense(StatusIncome, Status):
     def __init__(self):
         super().__init__()
 
@@ -83,14 +97,26 @@ class StatusExpense(StatusIncome):
             month = date.today().month,
             year = date.today().year) -> Union[int, float]:
         return super().day(day, month, year)
-    
-class Balance:
-    def __setattr__(self, name: str, value: Any) -> Any:
-        if name not in ["year", "month", "day"]:
-            raise Exception("none")
-        
-        return super().__setattr__(name, value)
 
+class TransactionNumber(Status):
+    def lifetime(self) -> int:
+        return len(StatusIncome().lifetime()) + len(StatusExpense().lifetime())
+    
+    def year(self, year = date.today().year) -> int:
+        return len(StatusIncome().year(year = year)) + len(StatusExpense().year(year = year))
+    
+    def month(self,
+              month = date.today().month,
+              year = date.today().year) -> int:
+        return len(StatusIncome().month(month = month, year = year)) + len(StatusExpense().month(month = month, year = year))
+    
+    def day(self,
+            day = date.today().day,
+            month = date.today().month,
+            year = date.today().year):
+        return len(StatusIncome().day(day = day, month = month, year = year)) + len(StatusExpense().day(day = day, month = month, year = year))
+
+class Balance(Status):
     def lifetime(self) -> Union[int, float]:
         return StatusIncome().lifetime() - StatusExpense().lifetime()
     
