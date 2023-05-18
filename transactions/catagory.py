@@ -6,12 +6,14 @@ used in transactions and budgets.
 This exports:
 
 (Class) Income:
+---------------
 -   get_catagories: returns a dictionary of all the catagory names and their colors.
 -   add_catagory: used to create a new catagory.
 -   remove_catagory: used to remove the catagories corresponding to the catagory name(s) provided as str / list.
 -   edit_catagory: used to edit the name of the catagory.
 
 (Class) Expense:
+----------------
 -   ** Subclass of Income **.
 -   ** Same functions as of Income **
 """
@@ -30,12 +32,15 @@ except Exception:
 
 class Income:
     def __init__(self):
-        self.file = self.__class__.__name__
+        self.file = self.__class__.__name__.lower()
+
+    def __repr__(self) -> str:
+        return f"file = {self.file}"
 
     def __setattr__(self, name: str, value: Any):
 
         # Raising an error if the name of the file to be accessed is altered.
-        if name == "file" and value != self.__class__.__name__:
+        if name == "file" and value != self.__class__.__name__.lower():
             raise Exception("0xegbl0003")
         
         return super().__setattr__(name, value)

@@ -5,6 +5,7 @@ management and troubleshooting of transactions.
 This exports:
 
 (Class) Manage:
+---------------
 -   get_transactions_id: returns the ID of the transactions as strings.
 -   get_transactions: return a list of all existing valid transactions dictionaries.
 -   add_transaction: used to create a new transaction.
@@ -24,7 +25,7 @@ try:
     import data.info as info
     from threading import Thread
     import payment_mode as pay_mode
-    from common.directory import indexer
+    from common.directory import Indexer
     from catagory import Income, Expense
     import data.pre_requisites as pre_requisites
 except Exception:
@@ -35,7 +36,7 @@ class Manage:
 
         # Capturing transaction files from the transactions data folder.
         try:
-            transaction_files: list[str] = indexer(info.DATA_TRANSACTIONS).get_files()
+            transaction_files: list[str] = Indexer(info.DATA_TRANSACTIONS).get_files()
         except Exception:
             raise Exception("0xetrn0004")
 
@@ -265,7 +266,7 @@ class TroubleShoot:
 
         # Capturing the names of the files present in the transactions data folder.
         try:
-            transaction_files: list[str] = indexer(info.DATA_TRANSACTIONS).get_files()
+            transaction_files: list[str] = Indexer(info.DATA_TRANSACTIONS).get_files()
         except Exception:
             raise Exception("0xetrn0004")
         

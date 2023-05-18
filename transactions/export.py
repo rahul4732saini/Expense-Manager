@@ -5,6 +5,7 @@ of PDF / CSV.
 This exports:
 
 (Class) Transactions:
+---------------------
 -   to_CSV: converts the transactions into a CSV file.
 -   to_PDF: converts the transactions provided into a PDF file."""
 try:
@@ -38,10 +39,7 @@ class Transactions:
             ]
         )
 
-    def __setattr__(self, name: str, value: Any) -> None:
-        if name not in ["transactions_id", "save_location", "savefile_name", "transactions_details"]:
-            raise Exception("m")
-
+    def __setattr__(self, name: str, value: Any):
         match name:
             case "transactions_id":
                 if value.__class__ != list or not all([i in Manage().get_transactions_id() for i in value]):

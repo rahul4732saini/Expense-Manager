@@ -5,6 +5,7 @@ management and troubleshooting of payment modes.
 This exports:
 
 (Class) Manage:
+---------------
 -   get_modes: return all the existing payment modes dictionaries.
 -   get_mode_name: returns all the names of the existing payment modes.
 -   add_mode: used to add a new payment mode.

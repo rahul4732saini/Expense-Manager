@@ -4,14 +4,15 @@ Module related to functions for sorting transactions.
 This exports:
 
 (Class) Sort:
-    date_added: return a list of transactions sorted on the basis of the date of creation.
-    time_added: return a list of transactions sorted on the basis of the time of creation.
-    datetime_added: return a list of transactions sorted on the basis of the datetime of creation.
-    amount: return a list of transactions sorted on the basis of amount.
-    transaction_date: return a list of transactions sorted on the basis of the date of transaction.
-    transaction_time: return a list of transactions sorted on the basis of the time of transaction.
-    transaction_datetime: return a list of transactions sorted on the basis of the datetime of transaction.
-    """
+-------------
+-   date_added: return a list of transactions sorted on the basis of the date of creation.
+-   time_added: return a list of transactions sorted on the basis of the time of creation.
+-   datetime_added: return a list of transactions sorted on the basis of the datetime of creation.
+-   amount: return a list of transactions sorted on the basis of amount.
+-   transaction_date: return a list of transactions sorted on the basis of the date of transaction.
+-   transaction_time: return a list of transactions sorted on the basis of the time of transaction.
+-   transaction_datetime: return a list of transactions sorted on the basis of the datetime of transaction.
+"""
 
 try:
     from sys import path
