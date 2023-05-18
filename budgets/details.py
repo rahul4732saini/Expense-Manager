@@ -88,7 +88,7 @@ class manage:
         budget_id: str = budget_dict.get("budget_id")
         budget: str = str(budget_dict).replace(", ", ",\n").replace("{", "{\n").replace("}", "\n}")
         
-        with open("%s\\bgt_id_%s.txt" % (info.DATA_BUDGETS, budget_id),'w') as file:
+        with open("%s\\bgt_id_%s.txt" % (info.DATA_BUDGETS, budget_id), 'w') as file:
             file.write(budget)
 
     def add_budget(self,
@@ -116,10 +116,10 @@ class manage:
             raise Exception("0xebgt0001")
 
         self._check_budget_validity(entry, exists = False)
-        self._write_budget(entry, exists = False)
+        self._write_budget(entry)
 
-    def delete_budgets(self, budgets_id: Union[list, tuple, set]):
-        if budgets_id.__class__ not in [list, tuple, set]:
+    def delete_budgets(self, budgets_id: Union[str, list[str]]):
+        if budgets_id.__class__ not in [str, list[str]]:
             raise Exception("0xebgt0012")
         
         i: str
@@ -143,7 +143,7 @@ class manage:
 
         try:
             i: dict
-            for i in self.read_budgets():
+            for i in self.get_budgets():
                 if i.get("budget_id") == budget_id:
                     content = i
                     break
