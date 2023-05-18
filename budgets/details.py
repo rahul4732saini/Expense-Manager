@@ -1,3 +1,18 @@
+r"""
+Module related to functions required for the
+management and troubleshooting of budgets.
+
+This Exports:
+
+(Class) Manage:
+---------------
+-   get_budgets_id: return a list of budgets ID.
+-   get_budgets: return a list of all existing valid budgets in the form of dictionaries.
+-   add_budget: used to create a new budget.
+-   delete_budget: used to delete the budgets corresponding to the budgets ID provided as str / list.
+-   edit_budget: used to edit the details of the budget corresponding to the budget ID provided.
+"""
+
 try:
     from sys import path
     path.append("..\\Expense Manager")
@@ -14,12 +29,15 @@ except Exception:
     raise Exception("0xegbl0001")
 
 class Manage:
-    def get_budgets_id(self) -> list:        
+    def get_budgets_id(self) -> list:
+
+        # Capturing budget files from the budgets data folder.
         try:
             budget_files: list = Indexer(info.DATA_BUDGETS).get_files()
         except Exception:
             raise Exception("0xebgt0001")
         
+        # Verifying the names of the budget files.
         i:str
         for i in budget_files:
             if i.__len__() != 21 or i[:7] != "bgt_id_" or i[7:i.rfind(".")].isdigit() == False:
@@ -27,22 +45,26 @@ class Manage:
             if i.removesuffix(".txt") == i:
                 raise Exception("0xebgt0003")
             
+        # Returning only the ID of the budgets as strings.
         return [i[7:i.rfind(".")] for i in budget_files]
     
     def _create_budget_id(self) -> None:
+        # The max length of the ID is 10 digits.
         budget_id: str = str(random.randrange(10**10))
 
+        # While loop is called to define another ID if the ID generated already exists.
         while budget_id in self.get_budgets_id():
             budget_id = str(random.randrange(10**10))
 
+        # Changes the length of the ID by adding 0s in the begining if the length is less than 10.
         budget_id: str = "%s%s" % ("0"*(10-budget_id.__len__()), budget_id) if budget_id.__len__() < 10 else budget_id
         self._budget_id = budget_id
 
-    def _check_budget_validity(self, budget: dict, exists: bool) -> None:
-        bgt: dict = budget
+    def _verify_budget(self, bgt: dict, exists: bool) -> None:
+        # budget_dictionary as namespace bgt
 
         try:
-            if all(
+            if not all(
                 [   
                     # Verifying budget_ID
                     bgt.get("budget_id") in self.get_budgets_id() if exists
@@ -58,23 +80,28 @@ class Manage:
                     bgt.get("month") in range(1, 13) and bgt.get("year") in range(1980, 2100),
 
                     # Verifying catagories
-                    bgt.get("catagories") == None or bgt.get("catagories").__class__ == dict and all([i in Expense().get_catagories().keys() for i in bgt.get("catagories").keys()])
+                    bgt["catagories"] == None or (bgt["catagories"].__class__ == dict and 
+                    all([i in Expense().get_catagories().keys() for i in bgt["catagories"].keys()]) and
+                    all([i.__class__ in [int, float] for i in bgt["catagories"].values()]) and
+                    sum(bgt["catagories"].values()) <= bgt["range"])
                 ]
-            ) == False:
+            ):
                 raise Exception
         except Exception:
-            raise Exception("0xebgt0004") if exists == False else Exception("0xebgt0005")
+            raise Exception("0xebgt0004")
 
     def get_budgets(self) -> list:
-        budgets_id: list = self.get_budgets_id()
-        budgets: list = list()
+        budgets_id: list[str] = self.get_budgets_id()
+        budgets: list[dict] = list()
 
+        # Accessing the budget files, capturing the budgets and verifying them.
         try:
+            i: str
             for i in budgets_id:
-                with open("%s\\%s.txt" % (info.DATA_BUDGETS, i), 'r') as file:
+                with open("%s\\bgt_id_%s.txt" % (info.DATA_BUDGETS, i), 'r') as file:
                     content: dict = eval(file.read().replace("\n", ""))
 
-                    self._check_budget_validity(content, exists = True)
+                    self._verify_budget(content, exists = True)
                     budgets.append(content)
         except Exception:
             raise Exception("0xebgt0006")
@@ -82,7 +109,11 @@ class Manage:
         return budgets
     
     def _write_budget(self, budget_dict: dict) -> None:
+        
+        # Retrieving the budget ID to access the related budget file.
         budget_id: str = budget_dict.get("budget_id")
+
+        # Converting the budget dictionary into a readable string format to be written in the file.
         budget: str = str(budget_dict).replace(", ", ",\n").replace("{", "{\n").replace("}", "\n}")
         
         with open("%s\\bgt_id_%s.txt" % (info.DATA_BUDGETS, budget_id), 'w') as file:
@@ -94,6 +125,7 @@ class Manage:
                    year: int,
                    catagories: dict = None) -> None:
         
+        # Creating an unique budget ID
         thread = Thread(self._create_budget_id(), daemon = True)
         thread.start()
 
@@ -109,16 +141,23 @@ class Manage:
             "catagories": catagories
         }
 
-        if os.path.exists(info.DATA_BUDGETS) == False:
-            raise Exception("0xebgt0001")
-
-        self._check_budget_validity(entry, exists = False)
+        # Verifying and saving the budget into a file.
+        self._verify_budget(entry, exists = False)
         self._write_budget(entry)
 
     def delete_budgets(self, budgets_id: Union[str, list[str]]):
-        if budgets_id.__class__ not in [str, list[str]]:
+        if budgets_id.__class__ not in [str, list]:
             raise Exception("0xebgt0012")
         
+        budgets_id = budgets_id if budgets_id.__class__ == list else [budgets_id]
+
+        if len(budgets_id) > len(self.get_budgets_id()):
+            raise Exception("0xebgt0008")
+        
+        # List of budgets_id queued for deletion that exist, i.e., are valid.
+        valid_budgets_id = [i for i in budgets_id if i in self.get_budgets_id()]
+        
+        # Deleting budget files with related budget_id.
         i: str
         for i in budgets_id:
             try:
@@ -126,29 +165,34 @@ class Manage:
             except Exception:
                 os.system("del \"%s\\bgt_id_%s.txt\"" % (info.DATA_BUDGETS, i))
 
+        # Raising error if one or more of the payment modes names provided are not existant.
+        if len(valid_budgets_id) != len(budgets_id):
+            raise Exception("0xebgt0010")
+
     def edit_budget(self,
                     budget_id: str,
                     range: Union[int, float] = None,
                     month: str = None,
                     year: str = None,
                     catagories: dict = None):
-        
-        if all([value == None for key, value in locals() if key not in ["self", "budget_ud"]]):
-            raise Exception()
 
+        # Dictionary of the edits to be updated in the budget.
         edit = {key:value for key, value in locals().items() if key not in ["self", "budget_id"] and value != None}
 
-        try:
-            i: dict
-            for i in self.get_budgets():
-                if i.get("budget_id") == budget_id:
-                    content = i
-                    break
-            else:
-                raise Exception
-        except Exception:
+        if edit.__len__() == 0:
+            raise Exception("0xebgt0011")
+
+        # Iterates through the budgets and checks if a budget exists with the provided budget ID.
+        # Raises an error if no corresponding budget is found.
+        i: dict
+        for i in self.get_budgets():
+            if i.get("budget_id") == budget_id:
+                content = i
+                break
+        else:
             raise Exception("0xebgt0009")
         
+        # Updating the budget, Verifying it and saving it to the budget file.
         content.update(edit)
-        self._check_budget_validity(content, exists = True)
+        self._verify_budget(content, exists = True)
         self._write_budget(content)

@@ -14,7 +14,7 @@ This exports:
 
 (Class) Expense:
 ----------------
--   ** Subclass of Income **.
+-   ** Subclass of Income **
 -   ** Same functions as of Income **
 """
 

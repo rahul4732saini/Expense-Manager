@@ -45,7 +45,14 @@ TRANSACTION_TYPES = (
     "expense"
 )
 
-STATUS = (
+BUDGET_STATUS = (
+    "Success",
+    "Failed",
+    "Active",
+    "Upcoming"
+)
+
+TRANSACTION_STATUS = (
     "cleared",
     "cancelled",
     "upcoming"

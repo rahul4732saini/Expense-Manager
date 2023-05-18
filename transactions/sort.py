@@ -28,7 +28,7 @@ class Sort:
     def _verify_args(function):
         def wrapper(self, ascending: bool = True):
             if ascending.__class__ != bool:
-                raise Exception()
+                raise Exception("0xesrt0001")
 
             function(self, ascending)
 

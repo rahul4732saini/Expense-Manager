@@ -6,11 +6,11 @@ This exports:
 
 (Class) Manage:
 ---------------
--   get_transactions_id: returns the ID of the transactions as strings.
--   get_transactions: return a list of all existing valid transactions dictionaries.
+-   get_transactions_id: returns a list transactions ID.
+-   get_transactions: return a list of all existing valid transactions in the form of dictionaries.
 -   add_transaction: used to create a new transaction.
 -   switch_transaction: used to switch transaction status between upcoming - cleared - cancelled.
--   delete_transaction: used to delete the transactions corresponding to the transactions ID provided as str / list
+-   delete_transaction: used to delete the transactions corresponding to the transactions ID provided as str / list.
 -   edit_transaction: used to edit the details of the transaction corresponding to the transaction ID provided.
 """
 
@@ -48,7 +48,7 @@ class Manage:
             if i.removesuffix(".txt") == i:
                 raise Exception("0xetrn0002")
 
-        # Returning only the ID of the files/transactions as strings.
+        # Returning only the ID of the transactions as strings.
         return [i[7:i.rfind(".")] for i in transaction_files]
 
     def _create_transaction_id(self) -> None:
@@ -59,7 +59,7 @@ class Manage:
         while transaction_id in self.get_transactions_id():
             transaction_id: str = str(random.randrange(1,10**10))
 
-        # Changes the length of the ID by adding 0s if the length is less than 10.
+        # Changes the length of the ID by adding 0s in the begining if the length is less than 10.
         transaction_id = "%s%s" % ("0"*(10-transaction_id.__len__()),transaction_id) if transaction_id.__len__() < 10 else transaction_id
         self._transaction_id: str = transaction_id
 
@@ -75,7 +75,7 @@ class Manage:
                 # Verifying datetime_added
                 trn.get("datetime_added").__class__ == datetime.datetime and trn.get("datetime_added").year <= datetime.datetime.today().year,
 
-                trn.get("status") in pre_requisites.STATUS, # Verifying status
+                trn.get("status") in pre_requisites.TRANSACTION_STATUS, # Verifying status
                 trn.get("amount").__class__ in [int, float] and trn.get("amount") > 0, # Verifying amount
                 trn.get("transaction_type") in pre_requisites.TRANSACTION_TYPES, # Verifying transaction_type
                 trn.get("payment_mode") in pay_mode.Manage().get_mode_names(), # Verifying payment_mode
@@ -111,12 +111,13 @@ class Manage:
         transaction_files: list[str] = self.get_transactions_id()
         transactions: list[dict] = list()
 
-        # Reading the transactions files, capturing the transactions and verifying them.
+        # Accessing the transaction files, capturing the transactions and verifying them.
         try:
             i: str
             for i in transaction_files:
                 with open("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, i), 'r') as file:
                     content: dict = eval(file.read().replace("\n",""))
+
                     self._verify_transaction(content, exists = True)
                     transactions.append(content)
         except Exception:
@@ -124,7 +125,7 @@ class Manage:
 
         return transactions
 
-    def _write_transaction(self, transaction_dict: dict):
+    def _write_transaction(self, transaction_dict: dict) -> None:
 
         # Retrieving the transaction ID to access the related transaction file.
         transaction_id: str = transaction_dict.get("transaction_id")
@@ -143,7 +144,7 @@ class Manage:
                         transaction_datetime: datetime.datetime = None,
                         description: str = None) -> None:
         
-        # Creating a unique transaction ID
+        # Creating an unique transaction ID
         thread = Thread(self._create_transaction_id(), daemon = True)
         thread.start()
 
@@ -162,9 +163,6 @@ class Manage:
             "description": description
         }
 
-        if not os.path.exists(info.DATA_TRANSACTIONS):
-            raise Exception("0xetrn0004")
-
         # Verifying and saving the transaction into a file.
         self._verify_transaction(entry, exists = False)
         self._write_transaction(entry)
@@ -178,7 +176,7 @@ class Manage:
             with open("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, transaction_id), 'r') as file:
                 transaction: dict = eval(file.read().replace("\n",""))
             
-            if transaction not in self.get_transactions() or transaction.get("status") not in pre_requisites.STATUS:
+            if transaction not in self.get_transactions() or transaction.get("status") not in pre_requisites.TRANSACTION_STATUS:
                 raise Exception
         except Exception:
             raise Exception("0xetrn0006")
@@ -197,7 +195,7 @@ class Manage:
 
         transactions_id = transactions_id if transactions_id.__class__ == list else [transactions_id]
 
-        if transactions_id.__len__() > self.get_transactions_id().__len__():
+        if len(transactions_id) > len(self.get_transactions_id()):
             raise Exception("0xetrn0010")
 
         # List of transactions_id queued for deletion that exist, i.e., are valid.
@@ -212,7 +210,7 @@ class Manage:
                 os.system("del \"%s\\trn_id_%s.txt\"" % (info.DATA_TRANSACTIONS, i))
 
         # Raising error if one or more of the payment modes names provided are not existant.
-        if valid_transactions_id.__len__() != transactions_id.__len__():
+        if len(valid_transactions_id) != len(transactions_id):
             raise Exception("0xetrn0011")
 
     def edit_transaction(self,
@@ -231,19 +229,16 @@ class Manage:
             raise Exception("0xetrn0012")
 
         # Iterates through the transactions and checks if a transaction exists with the provided transaction ID.
-        # raises an error if no corresponding transaction is found.
-        try:
-            i: dict
-            for i in self.get_transactions():
-                if i.get("transaction_id") == transaction_id:
-                    transaction: dict = i
-                    break
-            else:
-                raise Exception
-        except Exception:
+        # Raises an error if no corresponding transaction is found.
+        i: dict
+        for i in self.get_transactions():
+            if i.get("transaction_id") == transaction_id:
+                transaction: dict = i
+                break
+        else:
             raise Exception("0xetrn0006")
 
-        # Updating the transaction, Verifying it and saving it to the transaction file. 
+        # Updating the transaction, Verifying it and saving it to the transaction file.
         transaction.update(edit)
         self._verify_transaction(transaction, exists = True)
         self._write_transaction(transaction)
@@ -304,3 +299,5 @@ class TroubleShoot:
             return True
         else:
             return False
+        
+Manage().add_transaction(500, "income", "cash", "gaming")
