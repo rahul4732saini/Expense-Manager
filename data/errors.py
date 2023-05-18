@@ -79,6 +79,9 @@ ERROR = {
             "0xebgt0009": "Cannot find any budget with the provided budget_ID.",
             "0xebgt0010": "One or more budgets queued for deletion do not exist.",
             "0xebgt0011": "No arguments were provided for editing the transaction."
+        },
+        "sort":{
+            "0xesrt0001": "Unexpected arguments were provided for sorting transactions."
         }
     }
 }
