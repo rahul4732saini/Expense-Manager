@@ -6,15 +6,14 @@ try:
     import random
     import datetime
     from typing import Union
-    from threading import Thread
-    from time import strftime, strptime
     import data.info as info
+    from threading import Thread
     from common.directory import Indexer
     from transactions.catagory import Expense
 except Exception:
     raise Exception("0xegbl0001")
 
-class manage:
+class Manage:
     def get_budgets_id(self) -> list:        
         try:
             budget_files: list = Indexer(info.DATA_BUDGETS).get_files()
@@ -31,7 +30,7 @@ class manage:
         return [i[7:i.rfind(".")] for i in budget_files]
     
     def _create_budget_id(self) -> None:
-        budget_id: int = str(random.randrange(10**10))
+        budget_id: str = str(random.randrange(10**10))
 
         while budget_id in self.get_budgets_id():
             budget_id = str(random.randrange(10**10))
@@ -50,15 +49,13 @@ class manage:
                     else bgt.get("budget_id").__class__ == str and bgt.get("budget_id").isdigit() and bgt.get("budget_id").__len__() == 10,
 
                     # Verifying datetime_added
-                    bool(strptime(bgt.get("date_added"), "%d-%m-%Y")) and int(bgt.get("date_added")[-4:]) <= int(strftime("%Y")),
-                    bool(strptime(bgt.get("time_added"), "%H:%M")),
+                    bgt.get("datetime_added").__class__ == datetime.datetime and bgt.get("datetime_added").year <= datetime.datetime.today().year,
 
                     # Verifying range
                     bgt.get("range").__class__ in [int, float] and bgt.get("range") > 0,
 
                     # Verifying month & year
-                    bool(strptime("%s-%s" % (bgt.get("month"), bgt.get("year")), "%m-%Y")),
-                    int(bgt.get("year")) in range(1980, 2100),
+                    bgt.get("month") in range(1, 13) and bgt.get("year") in range(1980, 2100),
 
                     # Verifying catagories
                     bgt.get("catagories") == None or bgt.get("catagories").__class__ == dict and all([i in Expense().get_catagories().keys() for i in bgt.get("catagories").keys()])
@@ -139,7 +136,7 @@ class manage:
         if all([value == None for key, value in locals() if key not in ["self", "budget_ud"]]):
             raise Exception()
 
-        edit = {key:value for key, value in locals().items() if key != "self" and key != "budget_id" and value != None}
+        edit = {key:value for key, value in locals().items() if key not in ["self", "budget_id"] and value != None}
 
         try:
             i: dict
@@ -147,9 +144,11 @@ class manage:
                 if i.get("budget_id") == budget_id:
                     content = i
                     break
+            else:
+                raise Exception
         except Exception:
             raise Exception("0xebgt0009")
         
         content.update(edit)
         self._check_budget_validity(content, exists = True)
-        self._write_budget(content, exists = True)
+        self._write_budget(content)
