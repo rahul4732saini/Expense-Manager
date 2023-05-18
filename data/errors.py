@@ -64,7 +64,7 @@ ERROR = {
             "0xepym0013": "Invalid arguments provided for payment modes deletion."
         },
         "sort":{
-            "0xesrt0001": "Unexpected arguments were provided for sorting transactions."
+            "0xetrn01sr": "Unexpected arguments were provided for sorting transactions."
         }
     },
     "budgets":{
@@ -81,7 +81,7 @@ ERROR = {
             "0xebgt0011": "No arguments were provided for editing the transaction."
         },
         "sort":{
-            "0xesrt0001": "Unexpected arguments were provided for sorting transactions."
+            "0xebgt01sr": "Unexpected arguments were provided for sorting transactions."
         }
     }
 }
