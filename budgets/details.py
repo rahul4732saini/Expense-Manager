@@ -68,14 +68,15 @@ class manage:
         except Exception:
             raise Exception("0xebgt0004") if exists == False else Exception("0xebgt0005")
 
-    def read_budgets(self) -> list:
-        budget_files: list = self.get_budgets()
+    def get_budgets(self) -> list:
+        budgets_id: list = self.get_budgets_id()
         budgets: list = list()
 
         try:
-            for i in budget_files:
-                with open("%s\\%s" % (info.DATA_BUDGETS, i)) as file:
+            for i in budgets_id:
+                with open("%s\\%s.txt" % (info.DATA_BUDGETS, i), 'r') as file:
                     content: dict = eval(file.read().replace("\n", ""))
+
                     self._check_budget_validity(content, exists = True)
                     budgets.append(content)
         except Exception:
@@ -83,7 +84,7 @@ class manage:
         
         return budgets
     
-    def _write_budget(self, budget_dict: dict, exists: bool) -> None:
+    def _write_budget(self, budget_dict: dict) -> None:
         budget_id: str = budget_dict.get("budget_id")
         budget: str = str(budget_dict).replace(", ", ",\n").replace("{", "{\n").replace("}", "\n}")
         
