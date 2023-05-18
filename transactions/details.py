@@ -66,29 +66,32 @@ class Manage:
     def _verify_transaction(self, trn: dict, exists: bool) -> None:
         # transaction_dictionary as namespace trn
 
-        if not all(
-            [
-                # Verifying transaction_ID
-                trn.get("transaction_id") in self.get_transactions_id() if exists
-                else trn.get("transaction_id").__class__ == str and trn.get("transaction_id").__len__() == 10 and trn.get("transaction_id").isdigit(),
+        try:
+            if not all(
+                [
+                    # Verifying transaction_ID
+                    trn.get("transaction_id") in self.get_transactions_id() if exists
+                    else trn.get("transaction_id").__class__ == str and trn.get("transaction_id").__len__() == 10 and trn.get("transaction_id").isdigit(),
 
-                # Verifying datetime_added
-                trn.get("datetime_added").__class__ == datetime.datetime and trn.get("datetime_added").year <= datetime.datetime.today().year,
+                    # Verifying datetime_added
+                    trn.get("datetime_added").__class__ == datetime.datetime and trn.get("datetime_added").year <= datetime.datetime.today().year,
 
-                trn.get("status") in pre_requisites.TRANSACTION_STATUS, # Verifying status
-                trn.get("amount").__class__ in [int, float] and trn.get("amount") > 0, # Verifying amount
-                trn.get("transaction_type") in pre_requisites.TRANSACTION_TYPES, # Verifying transaction_type
-                trn.get("payment_mode") in pay_mode.Manage().get_mode_names(), # Verifying payment_mode
-                trn.get("catagory").__class__ in [str, dict], # Verifying catagory
+                    trn.get("status") in pre_requisites.TRANSACTION_STATUS, # Verifying status
+                    trn.get("amount").__class__ in [int, float] and trn.get("amount") > 0, # Verifying amount
+                    trn.get("transaction_type") in pre_requisites.TRANSACTION_TYPES, # Verifying transaction_type
+                    trn.get("payment_mode") in pay_mode.Manage().get_mode_names(), # Verifying payment_mode
+                    trn.get("catagory").__class__ in [str, dict], # Verifying catagory
 
-                # Verifying transaction_datetime
-                trn.get("transaction_datetime") == None or trn.get("transaction_datetime").__class__ == datetime.datetime and
-                trn.get("transaction_datetime").year in range(1980, 2100),
+                    # Verifying transaction_datetime
+                    trn["transaction_datetime"] == None or trn["transaction_datetime"].__class__ == datetime.datetime and
+                    trn["transaction_datetime"].year in range(1980, 2100),
 
-                # Verifying description
-                trn.get("description") == None or trn.get("description").__class__ == str and trn.get("description").__len__() <= 100
-            ]
-        ):
+                    # Verifying description
+                    trn["description"] == None or trn["description"].__class__ == str and trn["description"].__len__() <= 100
+                ]
+            ):
+                raise Exception
+        except Exception:
             raise Exception("0xetrn0008")
 
         catagory: Union[str,dict] = trn.get("catagory")
