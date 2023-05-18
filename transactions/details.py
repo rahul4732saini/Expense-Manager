@@ -71,9 +71,8 @@ class Manage:
                 trn.get("transaction_id") in self.get_transactions_id() if exists
                 else trn.get("transaction_id").__class__ == str and trn.get("transaction_id").__len__() == 10 and trn.get("transaction_id").isdigit(),
 
-                # Verifying date_added & time_added
-                trn.get("date_added").__class__ == datetime.date and trn.get("date_added").year in range(1980, datetime.datetime.now().year+1),
-                trn.get("time_added").__class__ == datetime.time,
+                # Verifying datetime_added
+                trn.get("datetime_added").__class__ == datetime.datetime and trn.get("datetime_added").year <= datetime.datetime.today().year,
 
                 trn.get("status") in pre_requisites.STATUS, # Verifying status
                 trn.get("amount").__class__ in [int, float] and trn.get("amount") > 0, # Verifying amount
@@ -152,8 +151,7 @@ class Manage:
         
         entry: dict = {
             "transaction_id": self._transaction_id,
-            "time_added": datetime.time(datetime.datetime.now().hour, datetime.datetime.now().minute),
-            "date_added": datetime.date.today(),
+            "datetime_added": datetime.datetime.today(),
             "status": "cleared",
             "amount": amount,
             "transaction_type": transaction_type,

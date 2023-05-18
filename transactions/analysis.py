@@ -37,10 +37,14 @@ class StatusIncome(Status):
 
         return super().__setattr__(name, value)
 
-    def _verify_arguments(self, function):
+    def _verify_arguments(self):
         def wrapper(year,
                     month = None,
                     day = None):
+            
+            kwargs = {key: value for key, value in locals().items() if value != None or key != "self"}
+            print(kwargs)
+
             try:
                 if (year not in range(1980, 2100)) and (month != None and month not in range(1, 13)):
                     raise Exception
@@ -49,8 +53,6 @@ class StatusIncome(Status):
                     date(year, month, day)
             except Exception:
                 raise Exception("0xetrn01an")
-            
-            function()
 
         return wrapper
 
