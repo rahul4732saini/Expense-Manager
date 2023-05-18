@@ -20,6 +20,8 @@ except Exception:
     raise Exception("0xegbl0001")
 
 class Sort:
+
+    # Function to verify the arguments provided to the sort functions.
     def _verify_args(function):
         def wrapper(self, ascending: bool = True):
             if ascending.__class__ != bool:
@@ -29,6 +31,7 @@ class Sort:
 
         return wrapper
 
+    # General function for sorting transactions.
     def _sort(self,
               key,
               list = Manage().get_budgets(),

@@ -27,6 +27,27 @@ class Status(ABC):
     def day(self):
         ...
 
+class TransactionNumber(Status):
+    def _get_transactions(self) -> list[dict]:
+        return [i for i in Manage().get_transactions() if i["transaction_datetime"] != None]
+
+    def lifetime(self) -> int:
+        return self._get_transactions().__len__()
+    
+    def year(self, year: int):
+        return len([i for i in self._get_transactions() if i["transaction_datetime"].year == year])
+
+    def month(self,
+              month: int,
+              year: int) -> int:
+        return len([i for i in self._get_transactions() if i["transaction_datetime"].year == year and i["transaction_datetime"].month == month])
+
+    def day(self,
+            day: int,
+            month: int,
+            year: int) -> int:
+        return len([i for i in self._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)])
+
 class StatusIncome(Status):
     def __init__(self):
         self.transaction_type = "income" if "Income" in self.__class__.__name__ else "expense"
@@ -37,11 +58,12 @@ class StatusIncome(Status):
 
         return super().__setattr__(name, value)
 
+    # Function to verify the arguments provided to the sort functions.
     def _verify_arguments(function):
         def wrapper(self,
-                    year,
-                    month = None,
-                    day = None):
+                    year: int,
+                    month: int = None,
+                    day: int = None):
             
             kwargs = {key: value for key, value in locals().items() if value != None and key not in ["self", "function"]}
 
@@ -65,20 +87,20 @@ class StatusIncome(Status):
         return sum([i["amount"] for i in self._get_transactions()])
     
     @_verify_arguments
-    def year(self, year) -> Union[int, float]:
+    def year(self, year: int) -> Union[int, float]:
         return sum([i["amount"] for i in self._get_transactions() if i["transaction_datetime"].year == year])
     
     @_verify_arguments
     def month(self,
-              month,
-              year) -> Union[int, float]:
+              month: int,
+              year: int) -> Union[int, float]:
         return sum([i["amount"] for i in self._get_transactions() if i["transaction_datetime"].year == year and i["transaction_datetime"].month == month])
     
     @_verify_arguments
     def day(self,
-            day,
-            month,
-            year) -> Union[str, float]:
+            day: int,
+            month: int,
+            year: int) -> Union[str, float]:
         return sum([i["amount"] for i in self._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)])
     
 class StatusExpense(StatusIncome, Status):
@@ -88,34 +110,34 @@ class StatusExpense(StatusIncome, Status):
     def lifetime(self) -> Union[int, float]:
         return super().lifetime()
     
-    def year(self, year) -> Union[int, float]:
+    def year(self, year: int) -> Union[int, float]:
         return super().year(year = year)
     
     def month(self,
-              month,
-              year) -> Union[int, float]:
+              month: int,
+              year: int) -> Union[int, float]:
         return super().month(month = month, year = year)
     
     def day(self,
-            day,
-            month,
-            year) -> Union[int, float]:
+            day: int,
+            month: int,
+            year: int) -> Union[int, float]:
         return super().day(day = day, month = month, year = year)
 
 class Balance(Status):
     def lifetime(self) -> Union[int, float]:
         return StatusIncome().lifetime() - StatusExpense().lifetime()
     
-    def year(self, year) -> Union[int, float]:
+    def year(self, year: int) -> Union[int, float]:
         return StatusIncome().year(year = year) - StatusExpense().year(year = year)
     
     def month(self,
-              month,
-              year) -> Union[int, float]:
+              month: int,
+              year: int) -> Union[int, float]:
         return StatusIncome().month(month = month, year = year) - StatusExpense().month(month = month, year = year)
     
     def day(self,
-            day,
-            month,
-            year) -> Union[int, float]:
+            day: int,
+            month: int,
+            year: int) -> Union[int, float]:
         return StatusIncome().day(day = day, month = month, year = year) - StatusExpense().day(day = day, month = month, year = year)

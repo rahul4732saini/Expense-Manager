@@ -244,7 +244,7 @@ class Manage:
         self._write_transaction(transaction)
 
 class TroubleShoot:
-    # The following return True if fixed else False if the problem isn't fixed.
+    # The following functions return True if fixed else False if the problem isn't fixed.
     # Mention to the data.errors file for more information about the errors.
 
     def _verify_transaction_file_name(self, file_name: str) -> bool:
@@ -299,5 +299,3 @@ class TroubleShoot:
             return True
         else:
             return False
-        
-Manage().add_transaction(500, "income", "cash", "gaming")

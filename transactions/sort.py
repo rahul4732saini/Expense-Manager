@@ -58,5 +58,3 @@ class Sort:
         
         subsequent: list[dict] = [i for i in Manage().get_transactions() if i not in prior]
         return prior + subsequent
-    
-print(Sort().datetime_added())

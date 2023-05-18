@@ -196,3 +196,9 @@ class Manage:
         content.update(edit)
         self._verify_budget(content, exists = True)
         self._write_budget(content)
+
+class TroubleShoot:
+    # The following functions return True if fixed else False if the problem isn't fixed.
+    # Mention to the data.errors file for more information about the errors.
+
+    ...

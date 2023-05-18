@@ -182,7 +182,7 @@ class Manage:
         self._write_file(payment_modes)
 
 class TroubleShoot:
-    # The following return True if fixed else False if the problem isn't fixed.
+    # The following functions return True if fixed else False if the problem isn't fixed.
     # Mention to the data.errors file for more information about the errors.
 
     def er_0xepym0001(self) -> bool:

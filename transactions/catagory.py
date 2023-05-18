@@ -151,7 +151,7 @@ class Expense(Income):
         super().edit_catagory(old_catagroy_name, new_catagory_name)
 
 class TroubleShoot:
-    # The following return True if fixed else False if the problem isn't fixed.
+    # The following functions return True if fixed else False if the problem isn't fixed.
     # Mention to the data.errors file for more information about the errors.
 
     # To be continued...
