@@ -69,10 +69,10 @@ ERROR = {
             "0xebgt0001": "There was an error in fetching the budget files.",
             "0xebgt0002": "Unexpected files found in the budgets save folder.",
             "0xebgt0003": "Files with unexpected extension found in the save folder.",
-            "0xebgt0004": "Unexpected arguments detected while creating transactions.",
+            "0xebgt0004": "Unexpected arguments detected while creating budget.",
             "0xebgt0005": "Unexpected arguments detected while transactions.",
             "0xebgt0006": "Corrupted budget files found in the save folder.",
-            "0xebgt0007": "There was an error in creating the transaction ID.",
+            "0xebgt0007": "There was an error in creating the budget.",
             "0xebgt0008": "Unexpected argumnets detected for budget deletion.",
             "0xebgt0009": "Cannot continue the process as the file is corrupted."
         }
