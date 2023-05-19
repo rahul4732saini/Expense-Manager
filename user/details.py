@@ -35,35 +35,6 @@ class Details:
         ):
             raise Exception()
 
-    def _write_details(self, details: dict) -> None:
-        details = str(details).replace("{", "{\n").replace("}", "\n}").replace(", ", ",\n")
-
-        with open(info.DATA_USER, 'w') as file:
-            file.write(details)
-
-    def add_details(self,
-                    first_name: str,
-                    middle_name: str,
-                    last_name: str,
-                    email: str,
-                    region: str,
-                    date_of_birth: date) -> None:
-        
-        if self.get_details():
-            raise Exception()
-
-        details = {
-            "first_name": first_name,
-            "middle_name": middle_name,
-            "last_name": last_name,
-            "email": email,
-            "region": region,
-            "date_of_birth": date_of_birth
-        }
-
-        self._verify_details(details)
-        self._write_details(details)
-
     def edit_details(self,
                      first_name: str,
                      middle_name: str,
@@ -76,6 +47,14 @@ class Details:
 
         details.update(edit)
         self._verify_details(details)
-        self._write_details(details)
+        
+        details = str(details).replace("{", "{\n").replace("}", "\n}").replace(", ", ",\n")
 
-print(Details().get_details())
+        with open(info.DATA_USER, 'w') as file:
+            file.write(details)
+
+class TroubleShoot:
+    # The following functions return True if fixed else False if the problem isn't fixed.
+    # Mention to the data.errors file for more information about the errors.
+
+    ...
