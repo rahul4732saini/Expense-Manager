@@ -69,3 +69,12 @@ PAYMENT_MODE_CATAGORIES = (
     "credit_card",
     "debit_card"
 )
+
+USER_DETAILS_KEYS = (
+    "first_name",
+    "middle_name",
+    "last_name",
+    "email",
+    "region",
+    "date_of_birth"
+)

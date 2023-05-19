@@ -24,3 +24,4 @@ DATA_PAYMENT_MODES = "%s\\payment_modes.txt" % DATA_PATH
 DATA_TRANSACTIONS = "%s\\transactions" % DATA_PATH
 DATA_BUDGETS = "%s\\budgets" % DATA_PATH
 DATA_CATAGORIES = "%s\\catagories" % DATA_PATH
+DATA_USER = "%s\\user_details.txt" % DATA_PATH
