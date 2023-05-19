@@ -53,7 +53,7 @@ class Status(ABC):
 
 class TransactionNumber(Status):
     def lifetime(self) -> int:
-        return super()._get_transactions().__len__()
+        return Manage().get_transactions().__len__()
 
     @Status._verify_arguments    
     def year(self, year: int):
@@ -76,9 +76,6 @@ class StatusIncome(Status):
     def __init__(self):
         self._transaction_type = "income" if "Income" in self.__class__.__name__ else "expense"
 
-    def __repr__(self) -> str:
-        return f"_transactions"
-
     def __setattr__(self, name: str, value: Any):
         if name == "transaction_type" and value != ("income" if "Income" in self.__class__.__name__ else "expense"):
             raise Exception("0xegbl0003")
@@ -88,9 +85,9 @@ class StatusIncome(Status):
     def _get_transactions(self):
         return [i for i in super()._get_transactions() if i["transaction_type"] == self._transaction_type]
     
-    def lifetime(self) -> Union[int, float]:
-        return sum([i["amount"] for i in self._get_transactions()])
-    
+    def lifetime(self) -> Union[int, float]:    
+        return(sum([i["amount"] for i in Manage().get_transactions() if i["transaction_type"] == self._transaction_type]))
+
     @Status._verify_arguments
     def year(self, year: int) -> Union[int, float]:
         return sum([i["amount"] for i in self._get_transactions() if i["transaction_datetime"].year == year])
@@ -200,3 +197,45 @@ class AverageExpense(AverageIncome, Status):
             month: int,
             year: int) -> int:
         return super().day()
+    
+class CatagoryDistribution(Status):
+    def lifetime(self) -> dict:
+        ...
+
+    @Status._verify_arguments
+    def year(self, year: int) -> dict:
+        ...
+
+    @Status._verify_arguments
+    def month(self,
+              month: int,
+              year: int) -> dict:
+        ...
+
+    @Status._verify_arguments
+    def day(self,
+            day: int,
+            month: int,
+            year: int) -> dict:
+        ...
+
+class PaymodeModeDistribution(Status):
+    def lifetime(self) -> dict:
+        ...
+
+    @Status._verify_arguments
+    def year(self, year: int) -> dict:
+        ...
+
+    @Status._verify_arguments
+    def month(self,
+              month: int,
+              year: int) -> dict:
+        ...
+
+    @Status._verify_arguments
+    def day(self,
+            day: int,
+            month: int,
+            year: int) -> dict:
+        ...
