@@ -1,3 +1,13 @@
+r"""
+Module related to functions required for the
+management and trobuelshooting of user details.
+
+(Class) User:
+-------------
+-   get_details: return all the user details in the form of a dicionary.
+-   edit_details: used to alter the user details.
+"""
+
 try:
     from sys import path
     path.append("..\\Expense Manager")
@@ -9,7 +19,7 @@ try:
 except Exception:
     raise Exception("0xegbl0001")
 
-class Details:
+class User:
     def get_details(self) -> dict:
         if not os.path.exists(info.DATA_USER):
             raise Exception()
