@@ -78,7 +78,8 @@ ERROR = {
             "0xebgt0008": "Unexpected argumnets detected for budget deletion.",
             "0xebgt0009": "Cannot find any budget with the provided budget_ID.",
             "0xebgt0010": "One or more budgets queued for deletion do not exist.",
-            "0xebgt0011": "No arguments were provided for editing the transaction."
+            "0xebgt0011": "No arguments were provided for editing the transaction.",
+            "0xebgt0012": "Cannot create the budget as a budget has already been created for the provided month."
         },
         "sort":{
             "0xebgt01sr": "Unexpected arguments were provided for sorting transactions."

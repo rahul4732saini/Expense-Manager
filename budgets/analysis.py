@@ -32,3 +32,5 @@ class BudgetsNumber:
 
     def upcoming(self) -> int:
         return [i for i in Manage().get_budgets() if i["status"] == "upcoming"]
+    
+# pending...

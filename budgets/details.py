@@ -132,6 +132,9 @@ class Manage:
         if not hasattr(self, "_budget_id"):
             raise Exception("0xebgt0007")
 
+        if any([i["month"] == month and i["year"] == year for i in self.get_budgets()]):
+            raise Exception("0xebgt0012")
+
         entry = {
             "budget_id": self._budget_id,
             "datetime_added": datetime.datetime.today(),
