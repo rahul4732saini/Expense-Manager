@@ -6,6 +6,7 @@ try:
     from details import Manage
     from typing import Union, Any
     from abc import ABC, abstractmethod
+    import data.pre_requisites as pre_requisites
 except Exception:
     raise Exception("0xegbl0001")
 
@@ -50,6 +51,20 @@ class Status(ABC):
                 raise Exception("0xetrn01an")
 
         return wrapper
+    
+    def _evaluate_keys(self, transactions: list[dict], key: str) -> dict:
+        if key not in pre_requisites.TRANSACTION_KEYS:
+            raise Exception()
+        
+        distribution = {}
+
+        for i in transactions:
+            if i[key] in distribution:
+                distribution[i[key]] += 1
+            else:
+                distribution[i[key]] = 1
+
+        return distribution
 
 class TransactionNumber(Status):
     def lifetime(self) -> int:
@@ -154,25 +169,31 @@ class AverageIncome(Status):
         
         return super().__setattr__(name, value)
 
+    def _get_transactions(self) -> list[dict]:
+        return [i for i in Manage().get_transactions() if i["transaction_type"] == self._transaction_type]
+
     def lifetime(self) -> Union[int, float]:
-        ...
+        return sum([i["amount"] for i in self._get_transactions()]) / self._get_transactions().__len__()
 
     @Status._verify_arguments
     def year(self, year: int) -> Union[int, float]:
-        ...
+        target_transactions = [i for i in self._get_transactions() if i["transaction_datetime"].year == year]
+        return sum([i["amount"] for i in target_transactions]) / target_transactions.__len__()
 
     @Status._verify_arguments
     def month(self,
               month: int,
               year: int) -> Union[int, float]:
-        ...
+        target_transactions = [i for i in self._get_transactions() if i["trasnaction_datetime"].month == month and i["transaction_datetime"].year == year]
+        return sum([i["amount"] for i in target_transactions]) / target_transactions.__len__()
 
     @Status._verify_arguments
     def day(self,
             day: int,
             month: int,
             year: int) -> Union[int, float]:
-        ...
+        target_transactions = [i for i in self._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)]
+        return sum([i["amount"] for i in target_transactions]) / target_transactions.__len__()
 
 class AverageExpense(AverageIncome, Status):
     def __init__(self):
@@ -183,59 +204,59 @@ class AverageExpense(AverageIncome, Status):
     
     @Status._verify_arguments
     def year(self, year: int) -> int:
-        return super().year()
+        return super().year(year = year)
     
     @Status._verify_arguments
     def month(self,
               month: int,
               year: int) -> int:
-        return super().month()
+        return super().month(month = month, year = year)
     
     @Status._verify_arguments
     def day(self,
             day: int,
             month: int,
             year: int) -> int:
-        return super().day()
+        return super().day(day = day, month = month, year = year)
     
 class CatagoryDistribution(Status):
     def lifetime(self) -> dict:
-        ...
+        return super()._evaluate_keys(Manage().get_transactions(), key = "catagories")
 
     @Status._verify_arguments
     def year(self, year: int) -> dict:
-        ...
+        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].year == year], key = "catagories")
 
     @Status._verify_arguments
     def month(self,
               month: int,
               year: int) -> dict:
-        ...
+        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].month == month and i["transaction_datetime"].year == year], key = "catagories")
 
     @Status._verify_arguments
     def day(self,
             day: int,
             month: int,
             year: int) -> dict:
-        ...
+        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)], key = "catagories")
 
 class PaymodeModeDistribution(Status):
     def lifetime(self) -> dict:
-        ...
+        return super()._evaluate_keys(Manage().get_transactions(), key = "payment_mode")
 
     @Status._verify_arguments
     def year(self, year: int) -> dict:
-        ...
+        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].year == year], key = "payment_mode")
 
     @Status._verify_arguments
     def month(self,
               month: int,
               year: int) -> dict:
-        ...
+        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].year == year and i["transaction_datetime"].month == month], key = "payment_mode")
 
     @Status._verify_arguments
     def day(self,
             day: int,
             month: int,
             year: int) -> dict:
-        ...
+        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)], key = "payment_mode")

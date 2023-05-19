@@ -46,10 +46,10 @@ TRANSACTION_TYPES = (
 )
 
 BUDGET_STATUS = (
-    "Success",
-    "Failed",
-    "Active",
-    "Upcoming"
+    "success",
+    "failed",
+    "active",
+    "upcoming"
 )
 
 TRANSACTION_STATUS = (
