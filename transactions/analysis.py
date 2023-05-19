@@ -34,31 +34,31 @@ This exports:
 
 (Class) AverageTransactionIncome:
 ---------------------------------
--   lifetime:
--   year:
--   month:
--   day:
+-   lifetime: returns the average amount of money ever gained.
+-   year: returns the average amount of money gained in the provided year.
+-   month: returns the average amount of money gained in the provided month and year.
+-   day: returns the average amount of money gained on the provided date.
 
 (Class) AverageTransactionExpense:
 ----------------------------------
--   lifetime:
--   year:
--   month:
--   day:
+-   lifetime: returns the average amount of money ever spent.
+-   year: returns the average amount of money spent in the provided year.
+-   month: returns the average amount of money spent in the provided month and year.
+-   day: returns the average amount of money spent on the provided date.
 
 (Class) CatagoryDistribution:
 -----------------------------
--   lifetime:
--   year:
--   month:
--   day:
+-   lifetime: reuturns a dictionary of the catagory distribution of all the transactions.
+-   year: returns a dictionary of the catagory distribtuion of the transactions in the provided year.
+-   month: returns a dictionary of the catagory distribtuion of the transactions in the provided month and year.
+-   day: returns a dictionary of the catagory distribtuion of the transactions on the provided date.
 
 (Class) PaymentModeDistribution:
 --------------------------------
--   lifetime:
--   year:
--   month:
--   day:
+-   lifetime: reuturns a dictionary of the payment mode distribution of all the transactions.
+-   year: returns a dictionary of the payment mode distribtuion of the transactions in the provided year.
+-   month: returns a dictionary of the payment mode distribtuion of the transactions in the provided month and year.
+-   day: returns a dictionary of the payment mode distribtuion of the transactions on the provided date.
 """
 
 try:
@@ -124,8 +124,10 @@ class Status(ABC):
         if key not in pre_requisites.TRANSACTION_KEYS:
             raise Exception("0xetrn01an")
         
+        # key -> key; value -> number of occurance of the key
         distribution = {}
 
+        i: dict
         for i in transactions:
             if i[key] in distribution:
                 distribution[i[key]] += 1
@@ -139,7 +141,7 @@ class TransactionNumber(Status):
         return Manage().get_transactions().__len__()
 
     @Status._verify_arguments    
-    def year(self, year: int):
+    def year(self, year: int) -> int:
         return len([i for i in super()._get_transactions() if i["transaction_datetime"].year == year])
 
     @Status._verify_arguments
@@ -160,12 +162,12 @@ class StatusIncome(Status):
         self._transaction_type = "income" if "Income" in self.__class__.__name__ else "expense"
 
     def __setattr__(self, name: str, value: Any):
-        if name == "transaction_type" and value != ("income" if "Income" in self.__class__.__name__ else "expense"):
+        if name == "_transaction_type" and value != ("income" if "Income" in self.__class__.__name__ else "expense"):
             raise Exception("0xegbl0003")
 
         return super().__setattr__(name, value)
     
-    def _get_transactions(self):
+    def _get_transactions(self) -> list[dict]:
         return [i for i in super()._get_transactions() if i["transaction_type"] == self._transaction_type]
     
     def lifetime(self) -> Union[int, float]:    
@@ -238,30 +240,31 @@ class AverageTransactionIncome(Status):
         return super().__setattr__(name, value)
 
     def _get_transactions(self) -> list[dict]:
-        return [i for i in Manage().get_transactions() if i["transaction_type"] == self._transaction_type]
+        return [i for i in super()._get_transactions() if i["transaction_type"] == self._transaction_type]
 
     def lifetime(self) -> Union[int, float]:
-        return sum([i["amount"] for i in self._get_transactions()]) / self._get_transactions().__len__()
+        target_transactions = [i for i in Manage().get_transactions() if i["transaction_type"] == self._transaction_type]
+        return sum([i["amount"] for i in target_transactions]) / target_transactions.__len__()
 
     @Status._verify_arguments
     def year(self, year: int) -> Union[int, float]:
         target_transactions = [i for i in self._get_transactions() if i["transaction_datetime"].year == year]
-        return sum([i["amount"] for i in target_transactions]) / target_transactions.__len__()
+        return sum([i["amount"] for i in target_transactions]) / len(target_transactions) if len(target_transactions) != 0 else 0
 
     @Status._verify_arguments
     def month(self,
               month: int,
               year: int) -> Union[int, float]:
-        target_transactions = [i for i in self._get_transactions() if i["trasnaction_datetime"].month == month and i["transaction_datetime"].year == year]
-        return sum([i["amount"] for i in target_transactions]) / target_transactions.__len__()
-
+        target_transactions = [i for i in self._get_transactions() if i["transaction_datetime"].month == month and i["transaction_datetime"].year == year]
+        return sum([i["amount"] for i in target_transactions]) / len(target_transactions) if len(target_transactions) != 0 else 0
+    
     @Status._verify_arguments
     def day(self,
             day: int,
             month: int,
             year: int) -> Union[int, float]:
         target_transactions = [i for i in self._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)]
-        return sum([i["amount"] for i in target_transactions]) / target_transactions.__len__()
+        return sum([i["amount"] for i in target_transactions]) / len(target_transactions) if len(target_transactions) != 0 else 0
 
 class AverageTransactionExpense(AverageTransactionIncome, Status):
     def __init__(self):
@@ -289,24 +292,24 @@ class AverageTransactionExpense(AverageTransactionIncome, Status):
 
 class CatagoryDistribution(Status):
     def lifetime(self) -> dict:
-        return super()._evaluate_keys(Manage().get_transactions(), key = "catagories")
+        return super()._evaluate_keys(Manage().get_transactions(), key = "catagory")
 
     @Status._verify_arguments
     def year(self, year: int) -> dict:
-        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].year == year], key = "catagories")
+        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].year == year], key = "catagory")
 
     @Status._verify_arguments
     def month(self,
               month: int,
               year: int) -> dict:
-        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].month == month and i["transaction_datetime"].year == year], key = "catagories")
+        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].month == month and i["transaction_datetime"].year == year], key = "catagory")
 
     @Status._verify_arguments
     def day(self,
             day: int,
             month: int,
             year: int) -> dict:
-        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)], key = "catagories")
+        return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)], key = "catagory")
 
 class PaymodeModeDistribution(Status):
     def lifetime(self) -> dict:
