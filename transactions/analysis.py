@@ -27,38 +27,9 @@ class Status(ABC):
     def day(self):
         ...
 
-class TransactionNumber(Status):
     def _get_transactions(self) -> list[dict]:
         return [i for i in Manage().get_transactions() if i["transaction_datetime"] != None]
 
-    def lifetime(self) -> int:
-        return self._get_transactions().__len__()
-    
-    def year(self, year: int):
-        return len([i for i in self._get_transactions() if i["transaction_datetime"].year == year])
-
-    def month(self,
-              month: int,
-              year: int) -> int:
-        return len([i for i in self._get_transactions() if i["transaction_datetime"].year == year and i["transaction_datetime"].month == month])
-
-    def day(self,
-            day: int,
-            month: int,
-            year: int) -> int:
-        return len([i for i in self._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)])
-
-class StatusIncome(Status):
-    def __init__(self):
-        self.transaction_type = "income" if "Income" in self.__class__.__name__ else "expense"
-
-    def __setattr__(self, name: str, value: Any):
-        if name == "transaction_type" and value != ("income" if "Income" in self.__class__.__name__ else "expense"):
-            raise Exception("0xegbl0003")
-
-        return super().__setattr__(name, value)
-
-    # Function to verify the arguments provided to the sort functions.
     def _verify_arguments(function):
         def wrapper(self,
                     year: int,
@@ -80,23 +51,57 @@ class StatusIncome(Status):
 
         return wrapper
 
+class TransactionNumber(Status):
+    def lifetime(self) -> int:
+        return super()._get_transactions().__len__()
+
+    @Status._verify_arguments    
+    def year(self, year: int):
+        return len([i for i in super()._get_transactions() if i["transaction_datetime"].year == year])
+
+    @Status._verify_arguments
+    def month(self,
+              month: int,
+              year: int) -> int:
+        return len([i for i in super()._get_transactions() if i["transaction_datetime"].year == year and i["transaction_datetime"].month == month])
+
+    @Status._verify_arguments
+    def day(self,
+            day: int,
+            month: int,
+            year: int) -> int:
+        return len([i for i in super()._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)])
+
+class StatusIncome(Status):
+    def __init__(self):
+        self._transaction_type = "income" if "Income" in self.__class__.__name__ else "expense"
+
+    def __repr__(self) -> str:
+        return f"_transactions"
+
+    def __setattr__(self, name: str, value: Any):
+        if name == "transaction_type" and value != ("income" if "Income" in self.__class__.__name__ else "expense"):
+            raise Exception("0xegbl0003")
+
+        return super().__setattr__(name, value)
+    
     def _get_transactions(self):
-        return [i for i in Manage().get_transactions() if i["transaction_datetime"] != None and i["transaction_type"] == self.transaction_type]
+        return [i for i in super()._get_transactions() if i["transaction_type"] == self._transaction_type]
     
     def lifetime(self) -> Union[int, float]:
         return sum([i["amount"] for i in self._get_transactions()])
     
-    @_verify_arguments
+    @Status._verify_arguments
     def year(self, year: int) -> Union[int, float]:
         return sum([i["amount"] for i in self._get_transactions() if i["transaction_datetime"].year == year])
     
-    @_verify_arguments
+    @Status._verify_arguments
     def month(self,
               month: int,
               year: int) -> Union[int, float]:
         return sum([i["amount"] for i in self._get_transactions() if i["transaction_datetime"].year == year and i["transaction_datetime"].month == month])
     
-    @_verify_arguments
+    @Status._verify_arguments
     def day(self,
             day: int,
             month: int,
@@ -141,3 +146,57 @@ class Balance(Status):
             month: int,
             year: int) -> Union[int, float]:
         return StatusIncome().day(day = day, month = month, year = year) - StatusExpense().day(day = day, month = month, year = year)
+    
+class AverageIncome(Status):
+    def __init__(self):
+        self._transaction_type = "income" if "Income" in self.__class__.__name__ else "expense"
+
+    def __setattr__(self, name:str, value: Any):
+        if name == "_transaction_type" and value != ("income" if "Income" in self.__class__.__name__ else "expense"):
+            raise Exception("0xegbl0003")
+        
+        return super().__setattr__(name, value)
+
+    def lifetime(self) -> Union[int, float]:
+        ...
+
+    @Status._verify_arguments
+    def year(self, year: int) -> Union[int, float]:
+        ...
+
+    @Status._verify_arguments
+    def month(self,
+              month: int,
+              year: int) -> Union[int, float]:
+        ...
+
+    @Status._verify_arguments
+    def day(self,
+            day: int,
+            month: int,
+            year: int) -> Union[int, float]:
+        ...
+
+class AverageExpense(AverageIncome, Status):
+    def __init__(self):
+        super().__init__()
+
+    def lifetime(self) -> int:
+        return super().lifetime()
+    
+    @Status._verify_arguments
+    def year(self, year: int) -> int:
+        return super().year()
+    
+    @Status._verify_arguments
+    def month(self,
+              month: int,
+              year: int) -> int:
+        return super().month()
+    
+    @Status._verify_arguments
+    def day(self,
+            day: int,
+            month: int,
+            year: int) -> int:
+        return super().day()
