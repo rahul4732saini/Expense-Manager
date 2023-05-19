@@ -1,6 +1,8 @@
 r"""
-Module related to functions for the
-analysis of budgets.
+Module related to functions used
+for the analysis of budgets.
+
+This exports:
 
 (Class) BudgetsNumber:
 ----------------------

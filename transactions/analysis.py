@@ -1,3 +1,66 @@
+r"""
+Module related to functions used
+for the analysis of transactions.
+
+This exports:
+
+(Class) TransactionNumber:
+--------------------------
+-   lifetime: returns the total number of transactions ever added.
+-   year: returns the total number of transactions added in the provided year.
+-   month: returns the total number of transactions added in the provided month and year.
+-   day: returns the total number of transactions added on the provided date.
+
+(Class) StatusIncome:
+---------------------
+-   lifetime: returns the total sum of money ever gained.
+-   year: returns the total sum of money gained in the provided year.
+-   month: return the total sum of money gained in the provided month and year.
+-   day: return the total sum of money gained on the provided date.
+
+(Class) StatusExpense:
+----------------------
+-   lifetime: return the total sum of money ever spent.
+-   year: returns the total sum of money spent in the provided year.
+-   month: return the total sum of money spent in the provided month and year.
+-   day: return the total sum of money spent on the provided date.
+
+(Class) Balance:
+----------------
+-   lifetime: returns the overall balance of the transactions.
+-   year: returns the balance of the transactions added in the provided year
+-   month: returns the balance of the transactions added in the provided month and year
+-   day: returns the balance of the transactions added on the provided date.
+
+(Class) AverageTransactionIncome:
+---------------------------------
+-   lifetime:
+-   year:
+-   month:
+-   day:
+
+(Class) AverageTransactionExpense:
+----------------------------------
+-   lifetime:
+-   year:
+-   month:
+-   day:
+
+(Class) CatagoryDistribution:
+-----------------------------
+-   lifetime:
+-   year:
+-   month:
+-   day:
+
+(Class) PaymentModeDistribution:
+--------------------------------
+-   lifetime:
+-   year:
+-   month:
+-   day:
+"""
+
 try:
     from sys import path
     path.append("..\\Expense Manager")
@@ -10,6 +73,7 @@ try:
 except Exception:
     raise Exception("0xegbl0001")
 
+# Base class for all following analytic classes.
 class Status(ABC):
 
     @abstractmethod
@@ -29,6 +93,8 @@ class Status(ABC):
         ...
 
     def _get_transactions(self) -> list[dict]:
+        
+        # return all the transactions with a valid datetime provided.
         return [i for i in Manage().get_transactions() if i["transaction_datetime"] != None]
 
     def _verify_arguments(function):
@@ -37,8 +103,10 @@ class Status(ABC):
                     month: int = None,
                     day: int = None):
             
+            # Dictionary of all the keywords arguments to be provided to the function.
             kwargs = {key: value for key, value in locals().items() if value != None and key not in ["self", "function"]}
 
+            # Verifying arguments.
             try:
                 if (year not in range(1980, 2100)) or (month != None and month not in range(1, 13)):
                     raise Exception
@@ -54,7 +122,7 @@ class Status(ABC):
     
     def _evaluate_keys(self, transactions: list[dict], key: str) -> dict:
         if key not in pre_requisites.TRANSACTION_KEYS:
-            raise Exception()
+            raise Exception("0xetrn01an")
         
         distribution = {}
 
@@ -159,7 +227,7 @@ class Balance(Status):
             year: int) -> Union[int, float]:
         return StatusIncome().day(day = day, month = month, year = year) - StatusExpense().day(day = day, month = month, year = year)
     
-class AverageIncome(Status):
+class AverageTransactionIncome(Status):
     def __init__(self):
         self._transaction_type = "income" if "Income" in self.__class__.__name__ else "expense"
 
@@ -195,7 +263,7 @@ class AverageIncome(Status):
         target_transactions = [i for i in self._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)]
         return sum([i["amount"] for i in target_transactions]) / target_transactions.__len__()
 
-class AverageExpense(AverageIncome, Status):
+class AverageTransactionExpense(AverageTransactionIncome, Status):
     def __init__(self):
         super().__init__()
 
@@ -218,7 +286,7 @@ class AverageExpense(AverageIncome, Status):
             month: int,
             year: int) -> int:
         return super().day(day = day, month = month, year = year)
-    
+
 class CatagoryDistribution(Status):
     def lifetime(self) -> dict:
         return super()._evaluate_keys(Manage().get_transactions(), key = "catagories")
