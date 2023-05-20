@@ -97,8 +97,9 @@ class Status(ABC):
         # return all the transactions with a valid datetime provided.
         return [i for i in Manage().get_transactions() if i["transaction_datetime"] != None]
 
+    # The below function is restricted to keyword arguments only!
     def _verify_arguments(function):
-        def wrapper(self,
+        def wrapper(self, *,
                     year: int,
                     month: int = None,
                     day: int = None):
