@@ -34,9 +34,8 @@ class Sort:
     # General function for sorting transactions.
     def _sort(self,
               key,
-              list = Manage().get_budgets(),
               ascending = True) -> list[dict]:
-        return sorted(list, key = key, reverse = not ascending)
+        return sorted(Manage().get_budgets(), key = key, reverse = not ascending)
     
     @_verify_args
     def datetime_added(self, ascending = True) -> list[dict]:
@@ -48,4 +47,4 @@ class Sort:
     
     @_verify_args
     def active_month(self, ascending = True):
-        return self._sort(key = lambda bgt: date(bgt["year"], bgt["month"], 15), ascending = ascending)
+        return self._sort(key = lambda bgt: date(bgt["year"], bgt["month"], 1), ascending = ascending)
