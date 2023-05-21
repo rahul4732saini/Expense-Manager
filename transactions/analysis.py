@@ -91,12 +91,7 @@ class Status(ABC):
     @abstractmethod
     def day(self):
         ...
-
-    def _get_transactions(self) -> list[dict]:
-        
-        # return all the transactions with a valid datetime provided.
-        return [i for i in Manage().get_transactions() if i["transaction_datetime"] != None]
-
+    
     # The below function is restricted to keyword arguments only!
     def _verify_arguments(function):
         def wrapper(self, *,
@@ -143,20 +138,20 @@ class TransactionNumber(Status):
 
     @Status._verify_arguments    
     def year(self, year: int) -> int:
-        return len([i for i in super()._get_transactions() if i["transaction_datetime"].year == year])
+        return len([i for i in Manage().get_transactions() if i["transaction_datetime"].year == year])
 
     @Status._verify_arguments
     def month(self,
               month: int,
               year: int) -> int:
-        return len([i for i in super()._get_transactions() if i["transaction_datetime"].year == year and i["transaction_datetime"].month == month])
+        return len([i for i in Manage().get_transactions() if i["transaction_datetime"].year == year and i["transaction_datetime"].month == month])
 
     @Status._verify_arguments
     def day(self,
             day: int,
             month: int,
             year: int) -> int:
-        return len([i for i in super()._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)])
+        return len([i for i in Manage().get_transactions() if i["transaction_datetime"].date() == date(year, month, day)])
 
 class StatusIncome(Status):
     def __init__(self):
@@ -169,7 +164,7 @@ class StatusIncome(Status):
         return super().__setattr__(name, value)
     
     def _get_transactions(self) -> list[dict]:
-        return [i for i in super()._get_transactions() if i["transaction_type"] == self._transaction_type]
+        return [i for i in Manage().get_transactions() if i["transaction_type"] == self._transaction_type]
     
     def lifetime(self) -> Union[int, float]:    
         return(sum([i["amount"] for i in Manage().get_transactions() if i["transaction_type"] == self._transaction_type]))
@@ -241,11 +236,10 @@ class AverageTransactionIncome(Status):
         return super().__setattr__(name, value)
 
     def _get_transactions(self) -> list[dict]:
-        return [i for i in super()._get_transactions() if i["transaction_type"] == self._transaction_type]
+        return [i for i in Manage().get_transactions() if i["transaction_type"] == self._transaction_type]
 
     def lifetime(self) -> Union[int, float]:
-        target_transactions = [i for i in Manage().get_transactions() if i["transaction_type"] == self._transaction_type]
-        return sum([i["amount"] for i in target_transactions]) / target_transactions.__len__()
+        return sum([i["amount"] for i in self._get_transactions()]) / self._get_transactions().__len__()
 
     @Status._verify_arguments
     def year(self, year: int) -> Union[int, float]:
@@ -332,3 +326,5 @@ class PaymodeModeDistribution(Status):
             month: int,
             year: int) -> dict:
         return super()._evaluate_keys([i for i in super()._get_transactions() if i["transaction_datetime"].date() == date(year, month, day)], key = "payment_mode")
+    
+# Testing pending...

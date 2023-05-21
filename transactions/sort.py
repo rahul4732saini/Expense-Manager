@@ -33,9 +33,8 @@ class Sort:
     # General function for sorting transactions.
     def _sort(self,
               key,
-              list: list[dict] = Manage().get_transactions(),
               ascending: bool = True) -> list[dict]:
-        return sorted(list, key = key, reverse = not ascending)
+        return sorted(Manage().get_transactions(), key = key, reverse = not ascending)
     
     @_verify_args
     def datetime_added(self, ascending: bool = True) -> list[dict]:
@@ -44,17 +43,7 @@ class Sort:
     @_verify_args
     def amount(self, ascending: bool = True) -> list[dict]:
         return self._sort(key = lambda trn: trn["amount"], ascending = ascending)
-
-    # Upcoming function related to datetime is divided into priors and subsequent to keep
-    # transactions with datetime provided aside from transactions with no datetime provided.
     
     @_verify_args
     def transaction_datetime(self, ascending: bool = True) -> list[dict]:
-        prior: list[dict] = self._sort(
-            list = [i for i in Manage().get_transactions() if i["transaction_datetime"] != None],
-            key = lambda trn: trn["transaction_datetime"],
-            ascending = ascending
-        )
-        
-        subsequent: list[dict] = [i for i in Manage().get_transactions() if i not in prior]
-        return prior + subsequent
+        return self._sort(list, key = lambda trn: trn["transaction_datetime"], ascending = ascending)

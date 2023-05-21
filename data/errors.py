@@ -40,7 +40,7 @@ ERROR = {
             "0xetrn0012": "No arguments were provided for editing the transaction."
         },
         "export":{
-            "0xetrn0ex1": "One or more provided transaction files do not exist.",
+            "0xetrn0ex1": "Invalid transactions_ID were provided as arguments.",
             "0xetrn0ex2": "The provided save location for the export file cannot be found.",
             "0xetrn0ex3": "No proper name provided for the export file.",
             "0xetrn0ex4": "Cannot continue the process as one or more of the target transaction files are corrupted."

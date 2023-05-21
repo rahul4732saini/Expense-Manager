@@ -110,19 +110,19 @@ class Manage:
             raise Exception("0xetrn0009")
 
     def get_transactions(self) -> list[dict]:
-        transaction_files: list[str] = self.get_transactions_id()
+        transactions_id: list[str] = self.get_transactions_id()
         transactions: list[dict] = list()
 
         # Accessing the transaction files, capturing the transactions and verifying them.
         i: str
-        for i in transaction_files:
+        for i in transactions_id:
             with open("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, i), 'r') as file:
                 try:
                     content: dict = eval(file.read().replace("\n",""))
                     self._verify_transaction(content, exists = True)
 
                     # Checking for invalid transaction_ID(s).
-                    if content["transaction_id"] == i:
+                    if content["transaction_id"] != i:
                         raise Exception
                 except Exception:
                     raise Exception("0xetrn0003")
