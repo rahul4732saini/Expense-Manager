@@ -1,3 +1,16 @@
+r"""
+Module related to function used
+for the filtering of budgets.
+
+(Class) Budgets:
+----------------
+-   filter_budget_id:
+-   filter_datetime_added:
+-   filter_range:
+-   filter_active_month:
+-   filter_catagory:
+"""
+
 try:
     from sys import path
     path.append("..\\Expense Manager")
@@ -18,44 +31,6 @@ class Budgets:
     def filetered_list(self) -> list[dict]:
         return self.__filtered_list
     
-    def filter_range(self, budget_range: Union[int, list[int], range]):
-
-        def _verify_arguments(budget_range):
-            if budget_range.__class__ not in [int, list, range]:
-                raise Exception
-            
-            match budget_range.__class__:
-                case "int" | "list":
-                    if not any(i > 0 for i in (budget_range if budget_range.__class__ == list else [budget_range])):
-                        raise Exception()
-                    
-                case "range":
-                    if budget_range.start < 0 or budget_range.stop <= budget_range.start or budget_range.step != 1:
-                        raise Exception()
-                    
-        _verify_arguments(budget_range)
-
-        return self
-
-    def filter_active_month(self, active_month: date | list[date] | DateRange):
-
-        def _verify_arguments(active_month):
-            if active_month.__class__ not in [date, list, DateRange]:
-                raise Exception
-            
-            match active_month.__class__:
-                case "date" | "list":
-                    if not any([i.year in range(1980, 2100) for i in (active_month if active_month.__class__ == list else [active_month])]):
-                        raise Exception
-                    
-                case "DateRange":
-                    if not any([i.year in range(1980, 2100) for i in [active_month.start, active_month.end]]):
-                        raise Exception
-                    
-        _verify_arguments(active_month)
-
-        return self
-
     def filter_budget_id(self, budget_id: str | list[str]):
 
         def _verify_arguments(budget_id):
@@ -96,8 +71,46 @@ class Budgets:
         _verify_argumentss(datetime_added)
 
         return self
+
+    def filter_range(self, budget_range: Union[int, list[int], range]):
+
+        def _verify_arguments(budget_range):
+            if budget_range.__class__ not in [int, list, range]:
+                raise Exception
+            
+            match budget_range.__class__:
+                case "int" | "list":
+                    if not any(i > 0 for i in (budget_range if budget_range.__class__ == list else [budget_range])):
+                        raise Exception()
+                    
+                case "range":
+                    if budget_range.start < 0 or budget_range.stop <= budget_range.start or budget_range.step != 1:
+                        raise Exception()
+                    
+        _verify_arguments(budget_range)
+
+        return self
+
+    def filter_active_month(self, active_month: date | list[date] | DateRange):
+
+        def _verify_arguments(active_month):
+            if active_month.__class__ not in [date, list, DateRange]:
+                raise Exception
+            
+            match active_month.__class__:
+                case "date" | "list":
+                    if not any([i.year in range(1980, 2100) for i in (active_month if active_month.__class__ == list else [active_month])]):
+                        raise Exception
+                    
+                case "DateRange":
+                    if not any([i.year in range(1980, 2100) for i in [active_month.start, active_month.end]]):
+                        raise Exception
+                    
+        _verify_arguments(active_month)
+
+        return self
     
-    def filter_catagories(self, catagory: str | list[str]):
+    def filter_catagory(self, catagory: str | list[str]):
         
         def _verify_arguments(catagory):
             if catagory.__class__ in [str, list]:
