@@ -62,7 +62,7 @@ class Manage:
 
     def _verify_budget(self, bgt: dict, exists: bool) -> None:
         # budget_dictionary as namespace bgt
-        
+
         try:
             if not all(
                 [   
@@ -101,9 +101,13 @@ class Manage:
                 try:
                     content: dict = eval(file.read().replace("\n", ""))
                     self._verify_budget(content, exists = True)
+
+                    # Checking for invalid budget_ID(s).
+                    if content["budget_id"] != i:
+                        raise Exception
                 except Exception:
                     raise Exception("0xebgt0005")
-                    
+
                 # Checking for budgets with similar active month.
                 if any([content["month"] == budget["month"] and content["year"] == budget["year"] for budget in budgets]):
                     raise Exception("0xebgt0012")
@@ -209,5 +213,3 @@ class TroubleShoot:
     # Mention to the data.errors file for more information about the errors.
 
     ...
-
-print(Manage().get_budgets())

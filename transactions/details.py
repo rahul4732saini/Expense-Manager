@@ -83,8 +83,7 @@ class Manage:
                     trn.get("catagory").__class__ in [str, dict], # Verifying catagory
 
                     # Verifying transaction_datetime
-                    trn["transaction_datetime"] == None or trn["transaction_datetime"].__class__ == datetime.datetime and
-                    trn["transaction_datetime"].year in range(1980, 2100),
+                    trn["transaction_datetime"].__class__ == datetime.datetime and trn["transaction_datetime"].year in range(1980, 2100),
 
                     # Verifying description
                     trn["description"] == None or trn["description"].__class__ == str and trn["description"].__len__() <= 100
@@ -115,16 +114,20 @@ class Manage:
         transactions: list[dict] = list()
 
         # Accessing the transaction files, capturing the transactions and verifying them.
-        try:
-            i: str
-            for i in transaction_files:
-                with open("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, i), 'r') as file:
+        i: str
+        for i in transaction_files:
+            with open("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, i), 'r') as file:
+                try:
                     content: dict = eval(file.read().replace("\n",""))
-
                     self._verify_transaction(content, exists = True)
-                    transactions.append(content)
-        except Exception:
-            raise Exception("0xetrn0003")
+
+                    # Checking for invalid transaction_ID(s).
+                    if content["transaction_id"] == i:
+                        raise Exception
+                except Exception:
+                    raise Exception("0xetrn0003")
+                
+                transactions.append(content)
 
         return transactions
 
@@ -144,7 +147,7 @@ class Manage:
                         transaction_type: str,
                         payment_mode: str,
                         catagory: Union[str, dict],
-                        transaction_datetime: datetime.datetime = None,
+                        transaction_datetime: datetime.datetime,
                         description: str = None) -> None:
         
         # Creating an unique transaction ID
