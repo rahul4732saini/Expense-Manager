@@ -73,13 +73,15 @@ ERROR = {
             "0xebgt0002": "Unexpected files found in the budgets save folder.",
             "0xebgt0003": "Files with unexpected extension found in the budgets save folder.",
             "0xebgt0004": "There was an error in verifying the budget.",
-            "0xebgt0006": "Corrupted budget files found in the save folder.",
-            "0xebgt0007": "There was an error in creating the budget.",
-            "0xebgt0008": "Unexpected argumnets detected for budget deletion.",
-            "0xebgt0009": "Cannot find any budget with the provided budget_ID.",
-            "0xebgt0010": "One or more budgets queued for deletion do not exist.",
-            "0xebgt0011": "No arguments were provided for editing the transaction.",
-            "0xebgt0012": "Cannot create the budget as a budget has already been created for the provided month."
+            "0xebgt0005": "Corrupted budget files found in the save folder.",
+            "0xebgt0006": "There was an error in creating the budget.",
+            "0xebgt0007": "Unexpected argumnets detected for budget deletion.",
+            "0xebgt0008": "Cannot find any budget with the provided budget_ID.",
+            "0xebgt0009": "One or more budgets queued for deletion do not exist.",
+            "0xebgt0010": "No arguments were provided for editing the transaction.",
+            "0xebgt0011": "Cannot create the budget as a budget has already been created for the provided month.",
+            "0xebgt0012": "Budgets with similar active month were detected.",
+            "0xebgt0013": "Budgets with similar ID were detected."
         },
         "sort":{
             "0xebgt01sr": "Unexpected arguments were provided for sorting transactions."

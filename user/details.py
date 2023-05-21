@@ -30,21 +30,23 @@ class User:
         self._verify_details(details)
         return details
         
-    def _verify_details(self, dt: dict) -> None:
-    # Using details as dt
+    def _verify_credentials(self, credentials):
 
-        if not all(
-            [
-                dt["first_name"].__class__ == str and dt["first_name"].__len__() < 15,
-                dt["middle_name"] == None or dt["middle_name"].__class__ == str and dt["middle_name"].__len__() < 15,
-                dt["last_name"].__class__ == str and dt["last_name"].__len__() < 15,
-                dt["email"] == None or dt["email"].__class__ == str,
-                dt["region"].__class__ == str,
-                dt["date_of_birth"].__class__ == date and dt["date_of_birth"] < date.today()
-            ]
-        ):
+        try:
+            if first_name.__len__() == 0 or last_name.__len__() == 0:
+                raise Exception()
+            
+            if email_id.__class__ != str or re.match(pattern = "", string = email_id):
+                raise Exception()
+            
+            if region not in region: # To be corrected....
+                raise Exception()
+
+            if date_of_birth.__class__ != date or date_of_birth > date.today():
+                raise Exception()
+        except Exception:
             raise Exception()
-
+        
     def edit_details(self,
                      first_name: str,
                      middle_name: str,

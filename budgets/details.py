@@ -44,7 +44,7 @@ class Manage:
                 raise Exception("0xebgt0002")
             if i.removesuffix(".txt") == i:
                 raise Exception("0xebgt0003")
-            
+
         # Returning only the ID of the budgets as strings.
         return [i[7:i.rfind(".")] for i in budget_files]
     
@@ -62,7 +62,7 @@ class Manage:
 
     def _verify_budget(self, bgt: dict, exists: bool) -> None:
         # budget_dictionary as namespace bgt
-
+        
         try:
             if not all(
                 [   
@@ -95,16 +95,20 @@ class Manage:
         budgets: list[dict] = list()
 
         # Accessing the budget files, capturing the budgets and verifying them.
-        try:
-            i: str
-            for i in budgets_id:
-                with open("%s\\bgt_id_%s.txt" % (info.DATA_BUDGETS, i), 'r') as file:
+        i: str
+        for i in budgets_id:
+            with open("%s\\bgt_id_%s.txt" % (info.DATA_BUDGETS, i), 'r') as file:
+                try:
                     content: dict = eval(file.read().replace("\n", ""))
-
                     self._verify_budget(content, exists = True)
-                    budgets.append(content)
-        except Exception:
-            raise Exception("0xebgt0006")
+                except Exception:
+                    raise Exception("0xebgt0005")
+                    
+                # Checking for budgets with similar active month.
+                if any([content["month"] == budget["month"] and content["year"] == budget["year"] for budget in budgets]):
+                    raise Exception("0xebgt0012")
+                    
+                budgets.append(content)
         
         return budgets
     
@@ -130,10 +134,10 @@ class Manage:
         thread.start()
 
         if not hasattr(self, "_budget_id"):
-            raise Exception("0xebgt0007")
+            raise Exception("0xebgt0006")
 
         if any([i["month"] == month and i["year"] == year for i in self.get_budgets()]):
-            raise Exception("0xebgt0012")
+            raise Exception("0xebgt0011")
 
         entry = {
             "budget_id": self._budget_id,
@@ -150,12 +154,12 @@ class Manage:
 
     def delete_budgets(self, budgets_id: Union[str, list[str]]):
         if budgets_id.__class__ not in [str, list]:
-            raise Exception("0xebgt0012")
+            raise Exception("0xebgt0011")
         
         budgets_id = budgets_id if budgets_id.__class__ == list else [budgets_id]
 
         if len(budgets_id) > len(self.get_budgets_id()):
-            raise Exception("0xebgt0008")
+            raise Exception("0xebgt0007")
         
         # List of budgets_id queued for deletion that exist, i.e., are valid.
         valid_budgets_id = [i for i in budgets_id if i in self.get_budgets_id()]
@@ -170,7 +174,7 @@ class Manage:
 
         # Raising error if one or more of the payment modes names provided are not existant.
         if len(valid_budgets_id) != len(budgets_id):
-            raise Exception("0xebgt0010")
+            raise Exception("0xebgt0009")
 
     def edit_budget(self,
                     budget_id: str,
@@ -183,7 +187,7 @@ class Manage:
         edit = {key:value for key, value in locals().items() if key not in ["self", "budget_id"] and value != None}
 
         if edit.__len__() == 0:
-            raise Exception("0xebgt0011")
+            raise Exception("0xebgt0010")
 
         # Iterates through the budgets and checks if a budget exists with the provided budget ID.
         # Raises an error if no corresponding budget is found.
@@ -193,7 +197,7 @@ class Manage:
                 content = i
                 break
         else:
-            raise Exception("0xebgt0009")
+            raise Exception("0xebgt0008")
         
         # Updating the budget, Verifying it and saving it to the budget file.
         content.update(edit)
@@ -205,3 +209,5 @@ class TroubleShoot:
     # Mention to the data.errors file for more information about the errors.
 
     ...
+
+print(Manage().get_budgets())
