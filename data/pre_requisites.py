@@ -77,3 +77,8 @@ USER_DETAILS_KEYS = (
     "region",
     "date_of_birth"
 )
+
+THEME = (
+    "light",
+    "dark"
+)

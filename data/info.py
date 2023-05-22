@@ -25,3 +25,4 @@ DATA_TRANSACTIONS = "%s\\transactions" % DATA_PATH
 DATA_BUDGETS = "%s\\budgets" % DATA_PATH
 DATA_CATAGORIES = "%s\\catagories" % DATA_PATH
 DATA_USER = "%s\\user_details.txt" % DATA_PATH
+DATA_SETTINGS = "%s\\settings.txt" % DATA_PATH
