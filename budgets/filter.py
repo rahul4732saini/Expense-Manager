@@ -61,7 +61,7 @@ class Budgets:
             
             match datetime_added.__class__:
                 case "datetime" | "list":
-                    if not any([i.year in range(1980, 2100) for i in (datetime_added if datetime_added.__class__ == list else [datetime_added])]):
+                    if not any([i < datetime.today() and i.year >= 1980 for i in (datetime_added if datetime_added.__class__ == list else [datetime_added])]):
                         raise Exception
                     
                 case "DatatimeRange":
@@ -84,7 +84,7 @@ class Budgets:
                         raise Exception()
                     
                 case "range":
-                    if budget_range.start < 0 or budget_range.stop <= budget_range.start or budget_range.step != 1:
+                    if budget_range.start <= 0 or budget_range.stop <= budget_range.start or budget_range.step != 1:
                         raise Exception()
                     
         _verify_arguments(budget_range)

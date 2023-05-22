@@ -29,8 +29,7 @@ WEEK_DAYS = {
 
 TRANSACTION_KEYS = (
     "transaction_id",
-    "date_added",
-    "time_added",
+    "datetime_added"
     "status",
     "amount",
     "transaction_type",
