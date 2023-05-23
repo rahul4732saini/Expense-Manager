@@ -19,37 +19,32 @@ try:
     import os.path
     import data.info as info
     from datetime import date
+    from data.region import get_regions
+    from email_validator import validate_email
 except Exception:
     raise Exception("0xegbl0001")
 
 class User:
     def get_details(self) -> dict:
         if not os.path.exists(info.DATA_USER):
-            raise Exception()
-
-        with open(info.DATA_USER, 'r') as file:
-            details = eval(file.read().replace("\n", ""))
-
-        self._verify_details(details)
-        return details
-        
-    def _verify_credentials(self, credentials):
+            raise Exception() if not os.path.exists(info.DATA_PATH) else Exception()
 
         try:
-            if first_name.__len__() == 0 or last_name.__len__() == 0:
-                raise Exception()
-            
-            if email_id.__class__ != str or re.match(pattern = "", string = email_id):
-                raise Exception()
-            
-            if region not in region: # To be corrected....
-                raise Exception()
+            with open(info.DATA_USER, 'r') as file:
+                details = eval(file.read().replace("\n", ""))
 
-            if date_of_birth.__class__ != date or date_of_birth > date.today():
-                raise Exception()
+                if details.__class__ != dict:
+                    raise Exception
+
+                self._verify_details(details)
         except Exception:
             raise Exception()
         
+        return details
+
+    def _verify_details(self, user_details: dict) -> None:
+        ...
+
     def edit_details(self,
                      first_name: str,
                      middle_name: str,

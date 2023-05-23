@@ -27,6 +27,7 @@ try:
     import payment_mode as pay_mode
     from common.directory import Indexer
     from catagory import Income, Expense
+    import user.settings as program_settings
     import data.pre_requisites as pre_requisites
 except Exception:
     raise Exception("0xegbl0001")
@@ -145,10 +146,10 @@ class Manage:
     def add_transaction(self,
                         amount: Union[int, float],
                         transaction_type: str,
-                        payment_mode: str,
                         catagory: Union[str, dict],
                         transaction_datetime: datetime.datetime,
-                        description: str = None) -> None:
+                        description: str = None,
+                        payment_mode: str = program_settings.Manage().get_settings()["default_payment_mode"]) -> None:
         
         # Creating an unique transaction ID
         thread = Thread(self._create_transaction_id(), daemon = True)
