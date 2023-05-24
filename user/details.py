@@ -8,9 +8,6 @@ management and trobuelshooting of user details.
 -   edit_details: used to alter the user details.
 """
 
-# Broken code...
-# To be fixed...
-
 try:
     from sys import path
     path.append("..\\Expense Manager")
