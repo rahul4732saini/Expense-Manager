@@ -22,6 +22,7 @@ try:
     from sys import path
     path.append("..\\Expense Manager")
 
+    import json
     import random
     import os.path
     import data.info as info
@@ -48,7 +49,7 @@ class Income:
     def get_catagories(self) -> dict:
 
         # Checking the existance of the catagories file path.
-        if not os.path.exists("%s\\%s.txt" % (info.DATA_CATAGORIES, self.file)):
+        if not os.path.exists("%s\\%s.json" % (info.DATA_CATAGORIES, self.file)):
             if not os.path.exists(info.DATA_CATAGORIES):
                 raise Exception("0xecat0001")
             else:
@@ -56,8 +57,8 @@ class Income:
 
         # Accessing the catagory file, capturing the contents and Verifying them.
         try:
-            with open("%s\\%s.txt" % (info.DATA_CATAGORIES, self.file), 'r') as file:
-                catagories: dict = eval(file.read().replace("\n",""))
+            with open("%s\\%s.json" % (info.DATA_CATAGORIES, self.file), 'r') as file:
+                catagories: dict = json.loads(file.read())
 
             if catagories.__class__ != dict:
                 raise Exception
@@ -73,10 +74,10 @@ class Income:
         
         return catagories
 
-    def _write_catagory(self, catagories_dict: dict) -> None:
+    def _write_catagory(self, catagories: dict) -> None:
 
         # Converting the dictionary into a readable string format to be written in the catagories (income / expense) data file.
-        catagories: str = str(catagories_dict).replace(", ", ",\n").replace("{", "{\n").replace("}", "\n}")
+        catagories: str = json.dumps(catagories).replace(", ", ",\n").replace("{", "{\n").replace("}", "\n}")
 
         with open("%s\\%s.txt" % (info.DATA_CATAGORIES, self.file), 'w') as file:
             file.write(catagories)

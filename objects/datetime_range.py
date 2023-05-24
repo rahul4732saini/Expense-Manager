@@ -1,43 +1,57 @@
-from datetime import date, datetime
-
-# Broken Code...
-# To be fixed...
+try:
+    from typing import Any
+    from datetime import date, datetime
+except:
+    raise Exception("0xegbl0001")
 
 class DateRange:
     def __init__(self, start_date: date, end_date: date):
-        self.__start = start_date
-        self.__end = end_date
+        self.start = start_date
+        self.end = end_date
 
-    @property
-    def start(self):
-        return self.__start
-    
-    @start.setter
-    def start(self, value):
-        if value.__class__ != date:
-            raise Exception
-        
-        self.start = value
-    
-    @property
-    def end(self):
-        print("property")
-        return self.__end
-    
-    @end.setter
-    def end(self, value):
-        if value.__class__ != date:
-            raise Exception
-        
-        print("called")
-        if value < self.start:
-            raise Exception
-        
-        self.end = value
+    def __setattr__(self, name: str, value: Any) -> None:
+        match name:
+            case "start":
+                if value.__class__ != date:
+                    raise Exception()
+                
+            case "end":
+                if value.__class__ != date:
+                    raise Exception()
+                
+        return super().__setattr__(name, value)
 
-class DatatimeRange:
+    def __contains__(self, key: object) -> bool:
+        if key.__class__ != date:
+            raise Exception()
+        
+        if key >= self.start and key < self.end:
+            return True
+        
+        return False
+
+class DatetimeRange:
     def __init__(self, start_datetime: datetime, end_datetime: datetime):
-        self.__start = start_datetime
-        self.__end = end_datetime
+        self.start = start_datetime
+        self.end = end_datetime
 
-# pending...
+    def __setattr__(self, name: str, value: Any) -> None:
+        match name:
+            case "start":
+                if value.__class__ != datetime:
+                    raise Exception()
+                
+            case "end":
+                if value.__class__ != datetime:
+                    raise Exception()
+                
+        return super().__setattr__(name, value)
+    
+    def __contains__(self, key: object) -> bool:
+        if key.__class__ != datetime:
+            raise Exception()
+        
+        if key >= self.start and key < self.end:
+            return True
+        
+        return False

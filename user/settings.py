@@ -2,6 +2,7 @@ try:
     from sys import path
     path.append("..\\Expense Manager")
 
+    import json
     import os.path
     import data.info as info
     import transactions.payment_mode as pay_mode
@@ -16,7 +17,7 @@ class Manage:
         
         with open(info.DATA_SETTINGS, 'r') as file:
             try:
-                settings: dict = eval(file.read().replace("\n", ""))
+                settings: dict = json.loads(file.read())
 
                 if settings.__class__ != dict:
                     raise Exception()
@@ -40,7 +41,7 @@ class Manage:
             raise Exception()
 
     def _write_settings(self, settings: dict):
-        settings: str = str(settings).replace("{", "{\n").replace("}", "\n}").replace(", ", ",\n")
+        settings: str = json.dumps(settings).replace("{", "{\n").replace("}", "\n}").replace(", ", ",\n")
 
         with open(info.DATA_SETTINGS, 'w') as file:
             file.write(settings)

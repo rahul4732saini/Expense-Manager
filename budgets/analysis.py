@@ -25,12 +25,12 @@ class BudgetsNumber:
         return Manage().get_budgets().__len__()
 
     def successful(self) -> int:
-        return [i for i in Manage().get_budgets() if i["status"] == "success"]
+        return list(filter(lambda bgt: bgt["status"] == "success"), Manage().get_budgets())
 
     def failed(self) -> int:
-        return [i for i in Manage().get_budgets() if i["status"] == "failed"]
+        return list(filter(lambda bgt: bgt["status"] == "failed"), Manage().get_budgets())
 
     def upcoming(self) -> int:
-        return [i for i in Manage().get_budgets() if i["status"] == "upcoming"]
+        return list(filter(lambda bgt: bgt["status"] == "upcoming"), Manage().get_budgets())
     
 # pending...
