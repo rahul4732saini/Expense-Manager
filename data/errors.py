@@ -2,7 +2,8 @@ ERROR = {
     "__global__":{
         "0xegbl0001": "One or more of the required modules are missing.",
         "0xegbl0002": "The data folder was not found.",
-        "0xegbl0003": "Class attributes must not be changed from their default values."
+        "0xegbl0003": "Class attributes must not be changed from their default values.",
+        "0xegbl0004": "Invalid arguments provided for setting class attributes."
     },
     "common":{
         "directory":{
@@ -81,7 +82,9 @@ ERROR = {
             "0xebgt0010": "No arguments were provided for editing the transaction.",
             "0xebgt0011": "Cannot create the budget as a budget has already been created for the provided month.",
             "0xebgt0012": "Budgets with similar active month were detected.",
-            "0xebgt0013": "Budgets with similar ID were detected."
+        },
+        "filter":{
+            "0xebgt01fl": "Invalid arguments were provided for filtering budgets.",
         },
         "sort":{
             "0xebgt01sr": "Unexpected arguments were provided for sorting transactions."

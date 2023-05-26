@@ -20,7 +20,7 @@ DATA_PATH = "%s\\Users\\%s\\Appdata\\Roaming\\expense_mgr" % (MAIN_DRIVE,USER_NA
 
 # == Data Folder Sub Folder Paths
 
-DATA_PAYMENT_MODES = "%s\\payment_modes.txt" % DATA_PATH
+DATA_PAYMENT_MODES = "%s\\payment_modes.json" % DATA_PATH
 DATA_TRANSACTIONS = "%s\\transactions" % DATA_PATH
 DATA_BUDGETS = "%s\\budgets" % DATA_PATH
 DATA_CATAGORIES = "%s\\catagories" % DATA_PATH

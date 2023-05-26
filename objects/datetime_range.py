@@ -13,17 +13,17 @@ class DateRange:
         match name:
             case "start":
                 if value.__class__ != date:
-                    raise Exception()
+                    raise Exception("0xegbl0004")
                 
             case "end":
                 if value.__class__ != date:
-                    raise Exception()
+                    raise Exception("0xegbl0004")
                 
         return super().__setattr__(name, value)
 
     def __contains__(self, key: object) -> bool:
         if key.__class__ != date:
-            raise Exception()
+            raise Exception("0xegbl0004")
         
         if key >= self.start and key < self.end:
             return True
@@ -39,17 +39,17 @@ class DatetimeRange:
         match name:
             case "start":
                 if value.__class__ != datetime:
-                    raise Exception()
+                    raise Exception("0xegbl0004")
                 
             case "end":
                 if value.__class__ != datetime:
-                    raise Exception()
+                    raise Exception("0xegbl0004")
                 
         return super().__setattr__(name, value)
     
     def __contains__(self, key: object) -> bool:
         if key.__class__ != datetime:
-            raise Exception()
+            raise Exception("0xegbl0004")
         
         if key >= self.start and key < self.end:
             return True

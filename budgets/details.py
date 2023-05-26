@@ -20,16 +20,16 @@ try:
     import os
     import random
     import datetime
-    from typing import Union
     import data.info as info
     from threading import Thread
     from common.directory import Indexer
     from transactions.catagory import Expense
+    import transactions.details as transactions
 except Exception:
     raise Exception("0xegbl0001")
 
 class Manage:
-    def get_budgets_id(self) -> list:
+    def get_budgets_id(self) -> list[str]:
 
         # Capturing budget files from the budgets data folder.
         try:
@@ -65,7 +65,7 @@ class Manage:
 
         try:
             if not all(
-                [   
+                (   
                     # Verifying budget_ID
                     bgt.get("budget_id") in self.get_budgets_id() if exists
                     else bgt.get("budget_id").__class__ == str and bgt.get("budget_id").isdigit() and bgt.get("budget_id").__len__() == 10,
@@ -81,17 +81,17 @@ class Manage:
 
                     # Verifying catagories
                     bgt["catagories"] == None or (bgt["catagories"].__class__ == dict and 
-                    all([i in Expense().get_catagories().keys() for i in bgt["catagories"].keys()]) and
-                    all([i.__class__ in [int, float] for i in bgt["catagories"].values()]) and
+                    all((i in Expense().get_catagories().keys() for i in bgt["catagories"].keys())) and
+                    all((i.__class__ in [int, float] for i in bgt["catagories"].values())) and
                     sum(bgt["catagories"].values()) <= bgt["range"])
-                ]
+                )
             ):
                 raise Exception
         except Exception:
             raise Exception("0xebgt0004")
 
-    def get_budgets(self) -> list:
-        budgets_id: list[str] = self.get_budgets_id()
+    def get_budgets(self) -> list[dict]:
+        budgets_id: tuple[str] = self.get_budgets_id()
         budgets: list[dict] = list()
 
         # Accessing the budget files, capturing the budgets and verifying them.
@@ -99,7 +99,7 @@ class Manage:
         for i in budgets_id:
             with open("%s\\bgt_id_%s.txt" % (info.DATA_BUDGETS, i), 'r') as file:
                 try:
-                    content: dict = eval(file.read().replace("\n", ""))
+                    content: dict = eval(file.read())
                     self._verify_budget(content, exists = True)
 
                     # Checking for invalid budget_ID(s).
@@ -109,13 +109,13 @@ class Manage:
                     raise Exception("0xebgt0005")
 
                 # Checking for budgets with similar active month.
-                if any([content["month"] == budget["month"] and content["year"] == budget["year"] for budget in budgets]):
+                if any((content["month"] == budget["month"] and content["year"] == budget["year"] for budget in budgets)):
                     raise Exception("0xebgt0012")
                     
                 budgets.append(content)
         
         return budgets
-    
+
     def _write_budget(self, budget_dict: dict) -> None:
         
         # Retrieving the budget ID to access the related budget file.
@@ -128,7 +128,7 @@ class Manage:
             file.write(budget)
 
     def add_budget(self,
-                   range: Union[int, float],
+                   range: int | float,
                    month: int,
                    year: int,
                    catagories: dict = None) -> None:
@@ -140,7 +140,7 @@ class Manage:
         if not hasattr(self, "_budget_id"):
             raise Exception("0xebgt0006")
 
-        if any([i["month"] == month and i["year"] == year for i in self.get_budgets()]):
+        if any((i["month"] == month and i["year"] == year for i in self.get_budgets())):
             raise Exception("0xebgt0011")
 
         entry = {
@@ -156,7 +156,7 @@ class Manage:
         self._verify_budget(entry, exists = False)
         self._write_budget(entry)
 
-    def delete_budgets(self, budgets_id: Union[str, list[str]]):
+    def delete_budgets(self, budgets_id: str | list[str]) -> None:
         if budgets_id.__class__ not in [str, list]:
             raise Exception("0xebgt0011")
         
@@ -166,15 +166,12 @@ class Manage:
             raise Exception("0xebgt0007")
         
         # List of budgets_id queued for deletion that exist, i.e., are valid.
-        valid_budgets_id = [i for i in budgets_id if i in self.get_budgets_id()]
+        valid_budgets_id: list = [i for i in budgets_id if i in self.get_budgets_id()]
         
         # Deleting budget files with related budget_id.
         i: str
         for i in budgets_id:
-            try:
-                os.remove("%s\\bgt_id_%s.txt" % (info.DATA_BUDGETS, i))
-            except Exception:
-                os.system("del \"%s\\bgt_id_%s.txt\"" % (info.DATA_BUDGETS, i))
+            os.system("del \"%s\\bgt_id_%s.txt\"" % (info.DATA_BUDGETS, i))
 
         # Raising error if one or more of the payment modes names provided are not existant.
         if len(valid_budgets_id) != len(budgets_id):
@@ -182,7 +179,7 @@ class Manage:
 
     def edit_budget(self,
                     budget_id: str,
-                    range: Union[int, float] = None,
+                    range: int | float = None,
                     month: str = None,
                     year: str = None,
                     catagories: dict = None):

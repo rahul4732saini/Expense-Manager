@@ -21,14 +21,13 @@ try:
     import os
     import random
     import datetime
-    from typing import Union
     import data.info as info
     from threading import Thread
-    import payment_mode as pay_mode
     from common.directory import Indexer
-    from catagory import Income, Expense
     import user.settings as program_settings
     import data.pre_requisites as pre_requisites
+    import transactions.payment_mode as pay_mode
+    from transactions.catagory import Income, Expense
 except Exception:
     raise Exception("0xegbl0001")
 
@@ -94,7 +93,7 @@ class Manage:
         except Exception:
             raise Exception("0xetrn0008")
 
-        catagory: Union[str,dict] = trn.get("catagory")
+        catagory: str | dict = trn.get("catagory")
         income_catagory: bool = trn.get("transaction_type") == "income"
 
         if any(
@@ -132,6 +131,25 @@ class Manage:
 
         return transactions
 
+    def get_status(self, month: int, year: int, transaction_type = str) -> int | float:
+        try:
+            # Verifying month and year.
+            datetime.date(year, month, 1)
+
+            # Verifying transaction_type provided.
+            if transaction_type not in pre_requisites.TRANSACTION_TYPES:
+                raise Exception
+        except Exception:
+            raise Exception()
+
+        # Function with the conditions for the filtering of the transactions.
+        validity_check = lambda trn: datetime.date(trn["transaction_datetime"].year, trn["transaction_datetime"].month, 1) == datetime.date(year, month, 1)
+        
+        # Filtering transactions with matching month, year and transcation_type.
+        filtered_transactions = list(filter(validity_check, [i for i in Manage().get_transactions() if i["transaction_type"] == transaction_type]))
+
+        return sum([i["amount"] for i in filtered_transactions])
+
     def _write_transaction(self, transaction_dict: dict) -> None:
 
         # Retrieving the transaction ID to access the related transaction file.
@@ -144,9 +162,9 @@ class Manage:
             file.write(transaction)
 
     def add_transaction(self,
-                        amount: Union[int, float],
+                        amount: int | float,
                         transaction_type: str,
-                        catagory: Union[str, dict],
+                        catagory: str | dict,
                         transaction_datetime: datetime.datetime,
                         description: str = None,
                         payment_mode: str = program_settings.Manage().get_settings()["default_payment_mode"]) -> None:
@@ -196,7 +214,7 @@ class Manage:
         transaction.update({"status": trn_status})
         self._write_transaction(transaction)
 
-    def delete_transaction(self, transactions_id: Union[list[str], str]) -> None:
+    def delete_transaction(self, transactions_id: str | list[str]) -> None:
         if transactions_id.__class__ not in [str, list]:
             raise Exception("0xetrn0010")
 
@@ -222,7 +240,7 @@ class Manage:
 
     def edit_transaction(self,
                         transaction_id: str,
-                        amount: Union[int, float] = None,
+                        amount: int | float = None,
                         transaction_type: str = None,
                         payment_mode: str = None,
                         catagory = None,
