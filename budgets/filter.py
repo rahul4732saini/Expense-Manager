@@ -4,13 +4,13 @@ for the filtering of budgets.
 
 (Class) Filter:
 ----------------
--   filter_budget_id: filters budgets on the basis of budgets_id provided.
--   filter_datetime_added: filters budgets on the basis of the datetime provided.
--   filter_range: filter budgets on the basis of the range provided.
--   filter_active_month: filters budgets on the basis of the active_month provided.
--   filter_catagory: filters budgets on the basis of the catagories provided.
--   filter_under_limit: filters budgets which are under limit.
--   filter_upper_limit: filters budget which are upper limit.
+-   budget_id: filters budgets on the basis of budgets_id provided.
+-   datetime_added: filters budgets on the basis of the datetime provided.
+-   range: filter budgets on the basis of the range provided.
+-   active_month: filters budgets on the basis of the active_month provided.
+-   catagory: filters budgets on the basis of the catagories provided.
+-   under_limit: filters budgets which are under limit.
+-   upper_limit: filters budget which are upper limit.
 """
 
 try:

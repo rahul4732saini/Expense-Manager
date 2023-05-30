@@ -154,7 +154,7 @@ class Manage:
         if budgets_id.__class__ not in [str, list]:
             raise Exception("0xebgt0009")
         
-        budgets_id: set = set(budgets_id if budgets_id.__class__ == list else [budgets_id])
+        budgets_id: set = set(budgets_id) if budgets_id.__class__ == list else {budgets_id}
         
         # List of budgets_id queued for deletion that exist, i.e., are valid.
         valid_budgets_id: set = {i for i in budgets_id if i in self.get_budgets_id()}
@@ -181,10 +181,12 @@ class Manage:
         if edit.__len__() == 0:
             raise Exception("0xebgt0008")
 
+        budgets: list[dict] = self.get_budgets()
+
         # Iterates through the budgets and checks if a budget exists with the provided budget ID.
         # Raises an error if no corresponding budget is found.
         i: dict
-        for i in self.get_budgets():
+        for i in budgets:
             if i.get("budget_id") == budget_id:
                 budget = i
                 break
@@ -198,7 +200,7 @@ class Manage:
         budget.update(edit)
 
         # Raising an error if month or year is provided as an argument and a budget for the provided month already exists.
-        if any((i in edit.keys() for i in ["month", "year"])) and any(([budget["month"], budget["year"]] == [i["month"], i["year"]] for i in self.get_budgets())):
+        if any((i in edit.keys() for i in ["month", "year"])) and any(([budget["month"], budget["year"]] == [i["month"], i["year"]] for i in budgets)):
             raise Exception("0xebgt0009")
 
         # Verifying the edited budget and saving it to the data folder.

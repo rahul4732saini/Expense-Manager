@@ -10,7 +10,6 @@ This exports:
 -   get_transactions: return a list of all existing valid transactions in the form of dictionaries.
 -   add_transaction: used to create a new transaction.
 -   switch_transaction: used to switch transaction status between upcoming - cleared - cancelled.
--   delete_transaction: used to delete the transactions corresponding to the transactions ID provided as str / list.
 -   edit_transaction: used to edit the details of the transaction corresponding to the transaction ID provided.
 """
 
@@ -18,13 +17,12 @@ try:
     from sys import path
     path.append("..\\Expense Manager")
     
-    import os
+    import re
     import random
     import datetime
     import data.info as info
     from threading import Thread
     from common.directory import Indexer
-    import user.settings as program_settings
     import data.pre_requisites as pre_requisites
     import transactions.payment_mode as pay_mode
     from transactions.catagory import Income, Expense
@@ -43,13 +41,11 @@ class Manage:
         # Verifying the names of the transaction files.
         i: str
         for i in transaction_files:
-            if i.__len__() != 21 or i[:7] != "trn_id_" or i[7:17].isdigit() == False:
+            if not re.match("^trn_id_[0-9]{10}.txt$", i):
                 raise Exception("0xetrn0001")
-            if i.removesuffix(".txt") == i:
-                raise Exception("0xetrn0002")
 
         # Returning only the ID of the transactions as strings.
-        return [i[7:i.rfind(".")] for i in transaction_files]
+        return [i[7:-4] for i in transaction_files]
 
     def _create_transaction_id(self) -> None:
         # The max length of the ID is 10 digits.
@@ -68,46 +64,32 @@ class Manage:
 
         try:
             if not all(
-                [
+                (
                     # Verifying transaction_ID
-                    trn.get("transaction_id") in self.get_transactions_id() if exists
-                    else trn.get("transaction_id").__class__ == str and trn.get("transaction_id").__len__() == 10 and trn.get("transaction_id").isdigit(),
+                    trn["transaction_id"] in self.get_transactions_id() if exists else re.match("^[0-9]{10}$", trn["transaction_id"]),
 
                     # Verifying datetime_added
-                    trn.get("datetime_added").__class__ == datetime.datetime and trn.get("datetime_added").year <= datetime.datetime.today().year,
+                    trn["datetime_added"].__class__ == datetime.datetime and trn["datetime_added"].year <= datetime.datetime.today().year,
 
-                    trn.get("status") in pre_requisites.TRANSACTION_STATUS, # Verifying status
-                    trn.get("amount").__class__ in [int, float] and trn.get("amount") > 0, # Verifying amount
-                    trn.get("transaction_type") in pre_requisites.TRANSACTION_TYPES, # Verifying transaction_type
-                    trn.get("payment_mode") in pay_mode.Manage().get_mode_names(), # Verifying payment_mode
-                    trn.get("catagory").__class__ in [str, dict], # Verifying catagory
+                    trn["status"] in pre_requisites.TRANSACTION_STATUS, # Verifying status
+                    trn["amount"].__class__ in [int, float] and trn.get("amount") > 0, # Verifying transaction_amount
+                    trn["transaction_type"] in pre_requisites.TRANSACTION_TYPES, # Verifying transaction_type
+                    trn["payment_mode"] in pay_mode.Manage().get_mode_names(), # Verifying payment_mode
+
+                    # Verifying catagory
+                    trn["catagory"].__class__ == str,
+                    trn["catagory"] in list((Income() if trn["transaction_type"] == "income" else Expense()).get_catagories().keys()) + [None],
 
                     # Verifying transaction_datetime
                     trn["transaction_datetime"].__class__ == datetime.datetime and trn["transaction_datetime"].year in range(1980, 2100),
 
                     # Verifying description
                     trn["description"] == None or trn["description"].__class__ == str and trn["description"].__len__() <= 100
-                ]
+                )
             ):
                 raise Exception
         except Exception:
             raise Exception("0xetrn0008")
-
-        catagory: str | dict = trn.get("catagory")
-        income_catagory: bool = trn.get("transaction_type") == "income"
-
-        if any(
-            [   
-                # Verifying catagory if transaction type == "income"
-                income_catagory and (catagory.__class__ == dict and catagory.get("others") == None or
-                catagory.__class__ == str and catagory not in Income().get_catagories()),
-
-                # Verifying catagory if transaction_type == "expense"
-                not income_catagory and (catagory.__class__ == dict and catagory.get("others") == None or
-                catagory.__class__ == str and catagory not in Expense().get_catagories()),
-            ]
-        ):
-            raise Exception("0xetrn0009")
 
     def get_transactions(self) -> list[dict]:
         transactions_id: list[str] = self.get_transactions_id()
@@ -118,7 +100,7 @@ class Manage:
         for i in transactions_id:
             with open("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, i), 'r') as file:
                 try:
-                    content: dict = eval(file.read().replace("\n",""))
+                    content: dict = eval(file.read())
                     self._verify_transaction(content, exists = True)
 
                     # Checking for invalid transaction_ID(s).
@@ -131,43 +113,22 @@ class Manage:
 
         return transactions
 
-    def get_status(self, month: int, year: int, transaction_type = str) -> int | float:
-        try:
-            # Verifying month and year.
-            datetime.date(year, month, 1)
+    def write_transaction(self, transaction: dict, exists: bool) -> None:
 
-            # Verifying transaction_type provided.
-            if transaction_type not in pre_requisites.TRANSACTION_TYPES:
-                raise Exception
-        except Exception:
-            raise Exception()
-
-        # Function with the conditions for the filtering of the transactions.
-        validity_check = lambda trn: datetime.date(trn["transaction_datetime"].year, trn["transaction_datetime"].month, 1) == datetime.date(year, month, 1)
-        
-        # Filtering transactions with matching month, year and transcation_type.
-        filtered_transactions = list(filter(validity_check, [i for i in Manage().get_transactions() if i["transaction_type"] == transaction_type]))
-
-        return sum([i["amount"] for i in filtered_transactions])
-
-    def _write_transaction(self, transaction_dict: dict) -> None:
-
-        # Retrieving the transaction ID to access the related transaction file.
-        transaction_id: str = transaction_dict.get("transaction_id")
+        # Verifying the transaction.
+        self._verify_transaction(transaction, exists)
 
         # Converting the transaction dictionary into a readable string format to be written in the file.
-        transaction: str = str(transaction_dict).replace(", ", ",\n").replace("{", "{\n").replace("}", "\n}")
-        
-        with open("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, transaction_id), 'w') as file:
-            file.write(transaction)
+        with open("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, transaction["transaction_id"]), 'w') as file:
+            file.write(str(transaction).replace(", ", ",\n").replace("{", "{\n").replace("}", "\n}"))
 
     def add_transaction(self,
                         amount: int | float,
                         transaction_type: str,
+                        payment_mode: str,
                         catagory: str | dict,
                         transaction_datetime: datetime.datetime,
-                        description: str = None,
-                        payment_mode: str = program_settings.Manage().get_settings()["default_payment_mode"]) -> None:
+                        description: str = None) -> None:
         
         # Creating an unique transaction ID
         thread = Thread(self._create_transaction_id(), daemon = True)
@@ -188,55 +149,23 @@ class Manage:
             "description": description
         }
 
-        # Verifying and saving the transaction into a file.
-        self._verify_transaction(entry, exists = False)
-        self._write_transaction(entry)
+        self.write_transaction(entry, exists = False)
 
     def switch_transaction(self, transaction_id: str) -> None:
-        if transaction_id not in self.get_transactions_id():
+
+        # Iterates through the transactions and checks if a transaction exists with the provided transaction ID.
+        # Raises an error if no corresponding transaction is found.
+        i: dict
+        for i in self.get_transactions():
+            if i["transaction_id"] == transaction_id:
+                transaction: dict = i
+                break
+        else:
             raise Exception("0xetrn0005")
 
-        # Accessing the transaction file, capturing the transaction and verifying it.
-        try:
-            with open("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, transaction_id), 'r') as file:
-                transaction: dict = eval(file.read().replace("\n",""))
-            
-            if transaction not in self.get_transactions() or transaction.get("status") not in pre_requisites.TRANSACTION_STATUS:
-                raise Exception
-        except Exception:
-            raise Exception("0xetrn0006")
-
-        # Changing the transaction's status
-        trn_status: str = transaction.get("status")
-        trn_status = "cleared" if trn_status == "cancelled" else "cancelled"
-
-        # Updating the transaction and saving it into the transaction file
-        transaction.update({"status": trn_status})
-        self._write_transaction(transaction)
-
-    def delete_transaction(self, transactions_id: str | list[str]) -> None:
-        if transactions_id.__class__ not in [str, list]:
-            raise Exception("0xetrn0010")
-
-        transactions_id = transactions_id if transactions_id.__class__ == list else [transactions_id]
-
-        if len(transactions_id) > len(self.get_transactions_id()):
-            raise Exception("0xetrn0010")
-
-        # List of transactions_id queued for deletion that exist, i.e., are valid.
-        valid_transactions_id = [i for i in transactions_id if i in self.get_transactions_id()]
-
-        # Deleting transaction files with related transactions_id.
-        i: str
-        for i in valid_transactions_id:
-            try:
-                os.remove("%s\\trn_id_%s.txt" % (info.DATA_TRANSACTIONS, i))
-            except Exception:
-                os.system("del \"%s\\trn_id_%s.txt\"" % (info.DATA_TRANSACTIONS, i))
-
-        # Raising error if one or more of the payment modes names provided are not existant.
-        if len(valid_transactions_id) != len(transactions_id):
-            raise Exception("0xetrn0011")
+        # Changing the transaction's status, and saving it into the transaction file
+        transaction.update({"status": "cleared" if transaction["status"] == "cancelled" else "cancelled"})
+        self.write_transaction(transaction, exists = True)
 
     def edit_transaction(self,
                         transaction_id: str,
@@ -257,70 +186,33 @@ class Manage:
         # Raises an error if no corresponding transaction is found.
         i: dict
         for i in self.get_transactions():
-            if i.get("transaction_id") == transaction_id:
+            if i["transaction_id"] == transaction_id:
                 transaction: dict = i
                 break
         else:
             raise Exception("0xetrn0006")
 
-        # Updating the transaction, Verifying it and saving it to the transaction file.
+        # Updating the transaction and saving it to the transaction file.
         transaction.update(edit)
-        self._verify_transaction(transaction, exists = True)
-        self._write_transaction(transaction)
+        self.write_transaction(transaction, exists = True)
 
 class TroubleShoot:
     # The following functions return True if fixed else False if the problem isn't fixed.
     # Mention to the data.errors file for more information about the errors.
 
-    def _verify_transaction_file_name(self, file_name: str) -> bool:
-
-        # Verifying the file name
-        return True if \
-        file_name.__len__() == 21 and \
-        file_name[:7] == "trn_id_" and \
-        file_name[7:17].isdigit() and \
-        file_name[17:] == ".txt" \
-        else False
-
     def er_0xetrn0001(self) -> bool:
-
-        # Capturing the names of the files present in the transactions data folder.
-        try:
-            transaction_files: list[str] = Indexer(info.DATA_TRANSACTIONS).get_files()
-        except Exception:
-            raise Exception("0xetrn0004")
+        ...
         
-        valid_files: list[str] = [i for i in transaction_files if self._verify_transaction_file_name(i)]
-        invalid_files: list[str] = [i for i in transaction_files if i not in valid_files]
-
-        if invalid_files.__len__() == 0:
-            return True
-        
-        # To be continued...
-        
-    def er_0xetrn0002(self):
-        self.er_0xetrn0001()
-
-    def er_0xetrn0003(self):
+    def er_0xetrn0002(self) -> bool:
         ...
 
-    def er_0xetrn0004(self):
+    def er_0xetrn0003(self) -> bool:
+        ...
+
+    def er_0xetrn0004(self) -> bool:
         ...
 
     def er_0xetrn0006(self) -> bool:
-        if os.path.exists(info.DATA_TRANSACTIONS):
-            return True
-        else:
-            if not os.path.exists(info.DATA_PATH):
-                raise Exception("0xegbl0002")
-            
-        # Creating the transactions data folder.
-        try:
-            os.mkdir(info.DATA_TRANSACTIONS)
-        except Exception:
-            os.system("mkrdir \"%s\"" % info.DATA_TRANSACTIONS)
+        ...
 
-        if os.path.exists(info.DATA_TRANSACTIONS):
-            return True
-        else:
-            return False
+    # pending...
