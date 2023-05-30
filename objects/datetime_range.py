@@ -1,3 +1,26 @@
+r"""
+This module contains important datatypes
+used in the filtering of budgets and transactions.
+
+This exports:
+
+(DataType) DateRange:
+---------------------
+
+-  Parameters:
+
+start_date: datetime.date = starting date of the range.
+end_date: datetime.date = ending date of the range.
+
+(DataType) DatetimeRange:
+-------------------------
+
+-  Parameters:
+
+start_datetime: datetime.datetime = starting datetime of the range.
+end_datetime: datetime.datetime = ending datetime of the range.
+"""
+
 try:
     from typing import Any
     from datetime import date, datetime
