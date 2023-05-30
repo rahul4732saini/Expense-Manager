@@ -16,15 +16,13 @@ ERROR = {
             "0xecat0002": "Income Catagories file not found.",
             "0xecat0003": "Income catagories file found to be corrupted.",
             "0xecat0004": "Provided catagory name is not valid.",
-            "0xecat0005": "One or more catagories queued for deletion do not exist.",
-            "0xecat0006": "All catagories cannot be removed.",
-            "0xecat0007": "Unexpected arguments provided for catagory deletion.",
-            "0xecat0008": "There is no catagory in existance with the provided name.",
-            "0xecat0009": "Cannot use the provided catagory name as a catagory with similar name already exists.",
-            "0xecat0010": "Expense Catagories file not found.",
-            "0xecat0011": "Expense Catagories file found to be corrupted.",
-            "0xecat0012": "The income catagories data file exceeds the limit of catagories that can be stored (50).",
-            "0xecat0013": "The expense catagories data file exceeds the limit of catagories that can be stored (50)."
+            "0xecat0005": "There is no catagory in existance with the provided name.",
+            "0xecat0006": "Cannot use the provided catagory name as a catagory with similar name already exists.",
+            "0xecat0007": "Expense Catagories file not found.",
+            "0xecat0008": "Expense Catagories file found to be corrupted.",
+            "0xecat0009": "The income catagories data file exceeds the limit of catagories that can be stored (50).",
+            "0xecat0010": "The expense catagories data file exceeds the limit of catagories that can be stored (50).",
+            "0xecat0011": "The catagory name cannot exceed the length of 25 characters.",
         },
         "details":{
             "0xetrn0001": "Unexpected files found in the transactions save folder.",
@@ -64,6 +62,9 @@ ERROR = {
             "0xepym0012": "Duplicate payment modes were found in the data folder.",
             "0xepym0013": "Invalid arguments provided for payment modes deletion."
         },
+        "filter":{
+            "0xetrn01fl": "Invalid arguments were provided for filtering transactions.",
+        },
         "sort":{
             "0xetrn01sr": "Unexpected arguments were provided for sorting transactions."
         }
@@ -72,22 +73,26 @@ ERROR = {
         "details":{
             "0xebgt0001": "Budgets save folder not found.",
             "0xebgt0002": "Unexpected files found in the budgets save folder.",
-            "0xebgt0003": "Files with unexpected extension found in the budgets save folder.",
-            "0xebgt0004": "There was an error in verifying the budget.",
-            "0xebgt0005": "Corrupted budget files found in the save folder.",
-            "0xebgt0006": "There was an error in creating the budget.",
-            "0xebgt0007": "Unexpected argumnets detected for budget deletion.",
-            "0xebgt0008": "Cannot find any budget with the provided budget_ID.",
-            "0xebgt0009": "One or more budgets queued for deletion do not exist.",
-            "0xebgt0010": "No arguments were provided for editing the transaction.",
-            "0xebgt0011": "Cannot create the budget as a budget has already been created for the provided month.",
-            "0xebgt0012": "Budgets with similar active month were detected.",
+            "0xebgt0003": "There was an error in verifying the budget.",
+            "0xebgt0004": "Corrupted budget files found in the save folder.",
+            "0xebgt0005": "There was an error in creating the budget.",
+            "0xebgt0006": "Cannot find any budget with the provided budget_ID.",
+            "0xebgt0007": "One or more budgets queued for deletion do not exist.",
+            "0xebgt0008": "No arguments were provided for editing the transaction.",
+            "0xebgt0009": "Cannot create the budget as a budget has already been created for the provided month.",
+            "0xebgt0010": "Budgets with similar active month were detected.",
         },
         "filter":{
             "0xebgt01fl": "Invalid arguments were provided for filtering budgets.",
         },
         "sort":{
             "0xebgt01sr": "Unexpected arguments were provided for sorting transactions."
+        }
+    },
+    "data":{
+        "region":{
+            "0xereg0001": "Regions data file not found.",
+            "0xereg0002": "Regions data file was found to be corrupted."
         }
     }
 }
