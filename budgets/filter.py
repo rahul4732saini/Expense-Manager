@@ -2,7 +2,7 @@ r"""
 Module related to function used
 for the filtering of budgets.
 
-(Class) Budgets:
+(Class) Filter:
 ----------------
 -   filter_budget_id: filters budgets on the basis of budgets_id provided.
 -   filter_datetime_added: filters budgets on the basis of the datetime provided.
@@ -19,29 +19,22 @@ try:
 
     from budgets.details import Manage
     from datetime import date, datetime
+    import transactions.analysis as analysis
     from transactions.catagory import Expense
-    import transactions.details as transactions
     from objects.datetime_range import DateRange, DatetimeRange
 
 except Exception:
     raise Exception("0xegbl0001")
 
-class Budgets:
+class Filter:
     def __init__(self):
         self.__filtered_list: list = Manage().get_budgets()
 
     @property
     def filtered_list(self) -> list[dict]:
         return self.__filtered_list
-    
-    @filtered_list.setter
-    def filtered_list(self, value) -> None:
-        if value.__class__ != list or not all((i in Manage().get_budgets() for i in value)):
-            raise Exception("0xegbl0003")
-        
-        self.__filtered_list = value
 
-    def filter_budget_id(self, budget_id: str | list[str]):
+    def budget_id(self, budget_id: str | list[str]):
         match budget_id.__class__.__name__:
             case "str" | "list":
                 budget_id = budget_id if budget_id.__class__ == list else [budget_id]
@@ -49,104 +42,112 @@ class Budgets:
                 if not all((i in Manage().get_budgets_id() for i in budget_id)):
                     raise Exception("0xebgt01fl")
                 
-                self.filtered_list = list(filter(lambda bgt: bgt["budget_id"] in budget_id, self.filtered_list))
+                self.__filtered_list = list(filter(lambda bgt: bgt["budget_id"] in budget_id, self.__filtered_list))
 
             case _:
                 raise Exception("0xebgt01fl")
 
         return self
 
-    def filter_datetime_added(self, datetime_added: datetime | list[datetime] | DatetimeRange):
+    def datetime_added(self, datetime_added: datetime | list[datetime] | DatetimeRange):
         match datetime_added.__class__.__name__:
             case "datetime" | "list":
                 datetime_added = datetime_added if datetime_added.__class__ == list else [datetime_added]
 
-                if not all((i < datetime.today() and i.year >= 1980 for i in datetime_added)):
+                if not all((i.__class__ == datetime for i in datetime_added)):
                     raise Exception("0xebgt01fl")
                 
-                self.filtered_list = list(filter(lambda bgt: bgt["datetime_added"] in datetime_added, self.filtered_list))
+                self.__filtered_list = list(filter(lambda bgt: bgt["datetime_added"] in datetime_added, self.__filtered_list))
 
             case "DatetimeRange":
-                if not all((i.year in range(1980, 2100) for i in (datetime_added.start, datetime_added.end))) or datetime_added.start == datetime_added.end:
+                if datetime_added.start >= datetime_added.end:
                     raise Exception("0xebgt01fl")
                 
-                self.filtered_list = list(filter(lambda bgt: bgt["datetime_added"] in datetime_added, self.filtered_list))
+                self.__filtered_list = list(filter(lambda bgt: bgt["datetime_added"] in datetime_added, self.__filtered_list))
 
             case _:
                 raise Exception("0xebgt01fl")
 
         return self
 
-    def filter_range(self, budget_range: int | list[int] | range):
+    def range(self, budget_range: int | float | list[int | float] | range):
         match budget_range.__class__.__name__:
-            case "int" | "list":
+            case "int" | "float" | "list":
                 budget_range = budget_range if budget_range.__class__ == list else [budget_range]
 
-                if not all((i > 0 for i in budget_range)):
+                if not all((i.__class__ in (int, float) and i > 0 for i in budget_range)):
                     raise Exception("0xebgt01fl")
                 
-                self.filtered_list = list(filter(lambda bgt: bgt["range"] in budget_range, self.filtered_list))
+                self.__filtered_list = list(filter(lambda bgt: bgt["range"] in budget_range, self.__filtered_list))
 
             case "range":
                 if budget_range.start < 0 or budget_range.stop <= budget_range.start or budget_range.step != 1:
                     raise Exception("0xebgt01fl")
                 
-                self.filtered_list = list(filter(lambda bgt: bgt["range"] in budget_range, self.filtered_list))
+                self.__filtered_list = list(filter(lambda bgt: bgt["range"] in budget_range, self.__filtered_list))
 
             case _:
                 raise Exception("0xebgt01fl")
 
         return self
 
-    def filter_active_month(self, active_month: date | list[date] | DateRange):
+    def active_month(self, active_month: date | list[date] | DateRange):
         match active_month.__class__.__name__:
             case "date" | "list":
                 active_month = active_month if active_month.__class__ == list else [active_month]
 
-                if not all((i.year in range(1980, 2100) for i in active_month)):
+                if not all((i.__class__ == date for i in active_month)):
                     raise Exception("0xebgt01fl")
                 
-                self.filtered_list = list(filter(lambda bgt: date(bgt["year"], bgt["month"], 1) in active_month, self.filtered_list))
+                self.__filtered_list = list(filter(lambda bgt: date(bgt["year"], bgt["month"], 1) in active_month, self.__filtered_list))
 
             case "DateRange":
-                if not all((i.year in range(1980, 2100) for i in (active_month.start, active_month.end))) or active_month.start == active_month.end:
+                if active_month.start >= active_month.end:
                     raise Exception("0xebgt01fl")
                 
-                # Function used for filtering budgets.
+                # Function used for filtering budgets on the basis of the month provided.
                 validity_check = lambda bgt: all((i["month"] == bgt["month"] and i["year"] == bgt["year"] for i in active_month))
 
-                self.filtered_list = list(filter(validity_check, self.filtered_list))
+                self.__filtered_list = list(filter(validity_check, self.__filtered_list))
 
             case _:
                 raise Exception("0xebgt01fl")
 
         return self
     
-    def filter_catagory(self, catagory: str | list[str]):
+    def catagory(self, catagory: str | list[str]):
         match catagory.__class__.__name__:
             case "str" | "list":
                 catagory = catagory if catagory.__class__ == list else [catagory]
 
-                if not all((i in Expense().get_catagories().keys() for i in catagory)):
+                if not all((i == None or i in Expense().get_catagories() for i in catagory)):
                     raise Exception("0xebgt01fl")
-                
-                # Budgets where the catagories are not None.
-                target_budgets = (i for i in self.filtered_list if i["catagories"] != None)
 
-                self.filtered_list = list(filter(lambda bgt: all([i in catagory for i in bgt["catagories"].keys()]), target_budgets))
+                # Function used for filtering bugets on the basis of catagories provided.
+                validity_check = lambda bgt: bgt["catagories"] in catagory or all([i in catagory for i in bgt["catagories"]])
+
+                self.__filtered_list = list(filter(validity_check, self.__filtered_list))
 
             case "NoneType":
-                self.filtered_list = list(filter(lambda bgt: bgt["catagories"] == None, self.filtered_list))
+                self.__filtered_list = list(filter(lambda bgt: bgt["catagories"] == None, self.__filtered_list))
 
             case _:
-                raise Exception("0xebgt01fl")                
+                raise Exception("0xebgt01fl")     
 
         return self
     
-    def filter_under_limit(self):
-        self.filtered_list = [i for i in Manage().get_budgets() if i["range"] >= transactions.Manage().get_status(i["month"], i["year"], "expense")]
+    def under_limit(self):
+
+        # Function for filtering budgets on the basis of under_limit.
+        validity_check = lambda bgt: bgt["range"] >= analysis.StatusExpense().month(month = bgt["month"], year = bgt["year"])
+        self.__filtered_list =  list(filter(validity_check, self.__filtered_list))
+
         return self
     
-    def filter_upper_limit(self):
-        self.filtered_list = [i for i in Manage().get_budgets() if i["range"] <= transactions.Manage().get_status(i["month"], i["year"], "expense")]
+    def upper_limit(self):
+
+        # Function for filtering budgets on the basis of upper limit.
+        validity_check = lambda bgt: bgt["range"] <= analysis.StatusExpense().month(month = bgt["month"], year = bgt["year"])
+        self.__filtered_list =  list(filter(validity_check, self.__filtered_list))
+
         return self

@@ -14,8 +14,8 @@ try:
     from sys import path
     path.append("..\\Expense Manager")
 
-    from details import Manage
     from datetime import date
+    from details import Manage
 except Exception:
     raise Exception("0xegbl0001")
 
@@ -42,9 +42,9 @@ class Sort:
         return self._sort(key = lambda bgt: bgt["datetime_added"], ascending = ascending)
     
     @_verify_args
-    def range(self, ascending = True):
+    def range(self, ascending = True) -> list[dict]:
         return self._sort(key = lambda bgt: bgt["range"], ascending = ascending)
     
     @_verify_args
-    def active_month(self, ascending = True):
+    def active_month(self, ascending = True) -> list[dict]:
         return self._sort(key = lambda bgt: date(bgt["year"], bgt["month"], 1), ascending = ascending)
