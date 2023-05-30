@@ -7,14 +7,15 @@ This exports:
 (Class) Transactions:
 ---------------------
 -   to_CSV: converts the transactions into a CSV file.
--   to_PDF: converts the transactions provided into a PDF file."""
+-   to_PDF: converts the transactions provided into a PDF file.
+"""
+
 try:
     from sys import path
     path.append("..\\Expense Manager")
 
     import pandas
     import os.path
-    from typing import Any
     from details import Manage
     import data.pre_requisites as pre_requisites
 except Exception:
@@ -32,17 +33,17 @@ class Transactions:
 
     def __repr__(self) -> str:
         return "\n".join(
-            [
+            (
                 f"transactions_id = {self.transactions_id if self.transactions_id.__class__ == list else [self.transactions_id]}",
                 f"save_location = {self.save_location}",
                 f"savefile_name = {self.savefile_name}"
-            ]
+            )
         )
 
-    def __setattr__(self, name: str, value: Any):
+    def __setattr__(self, name: str, value: object):
         match name:
             case "transactions_id":
-                if value.__class__ != list or not all([i in Manage().get_transactions_id() for i in value]):
+                if value.__class__ != list or not all((i in Manage().get_transactions_id() for i in value)):
                     raise Exception("0xetrn0ex1")
             
             case "save_location":
@@ -50,14 +51,14 @@ class Transactions:
                     raise Exception("0xetrn0ex2")
                 
             case "savefile_name":
-                if value.__len__() == 0:
+                if value.__len__() not in range(1, 50):
                     raise Exception("0xetrn0ex3")
         
         return super().__setattr__(name, value)
 
     def _to_DataFrame(self) -> pandas.DataFrame:
         try:
-            transactions_details: list = [i for i in Manage().get_transactions() if i.get("transaction_id") in self.transactions_id]
+            transactions_details: list = [i for i in Manage().get_transactions() if i["transaction_id"] in self.transactions_id]
         except Exception:
             raise Exception("0xetrn0ex4")
             
