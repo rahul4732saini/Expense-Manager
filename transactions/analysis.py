@@ -66,6 +66,7 @@ try:
     path.append("..\\Expense Manager")
 
     from datetime import date
+    from functools import wraps
     from abc import ABC, abstractmethod
     from transactions.details import Manage
     import data.pre_requisites as pre_requisites
@@ -93,6 +94,8 @@ class Status(ABC):
     
     # The below function is restricted to keyword arguments only!
     def _verify_arguments(function):
+
+        @wraps(function)
         def wrapper(self, *,
                     year: int,
                     month: int = None,

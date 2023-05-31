@@ -64,8 +64,7 @@ USER_DETAILS_KEYS = (
     "middle_name",
     "last_name",
     "email",
-    "region",
-    "date_of_birth"
+    "region"
 )
 
 THEME = (

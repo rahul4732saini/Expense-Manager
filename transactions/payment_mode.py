@@ -152,7 +152,7 @@ class Manage:
         except Exception:
             raise Exception("0xepym0006")
 
-        if edit.get("initial_balance") != None:
+        if edit.get("initial_balance"):
             # Rounding off the current balance value to the nearest 2 decimal places if it is a float value.
             edit["initial_balance"] = round(initial_balance, 2)
         

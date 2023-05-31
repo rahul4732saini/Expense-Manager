@@ -46,12 +46,9 @@ class Manage:
         with open(info.DATA_SETTINGS, 'w') as file:
             json.dump(settings, file, indent = 4)
 
-    def set_theme(self, theme: str):
-        if theme not in pre_requisites.THEME:
-            raise Exception()
-        
+    def change_theme(self):
         settings: dict = self.get_settings()
-        settings.update({"theme": "dark" if theme == "dark" else "light"})
+        settings.update({"theme": "dark" if settings["theme"] == "light" else "light"})
 
         self.write_settings(settings)
 

@@ -15,7 +15,6 @@ try:
     import json
     import os.path
     import data.info as info
-    from datetime import date
     from data.region import get_regions
     from email_validator import validate_email
     import data.pre_requisites as pre_requisites
@@ -25,11 +24,11 @@ except Exception:
 class User:
     def get_details(self) -> dict:
         if not os.path.exists(info.DATA_USER):
-            raise Exception() if not os.path.exists(info.DATA_PATH) else Exception()
+            raise Exception("0xegbl0001") if not os.path.exists(info.DATA_PATH) else Exception()
 
         try:
             with open(info.DATA_USER, 'r') as file:
-                details = json.loads(file.read())
+                details: dict = json.load(file)
 
                 if details.__class__ != dict:
                     raise Exception
@@ -45,7 +44,7 @@ class User:
         details = user_details
 
         # Verifying the presence of all required keys.
-        if tuple(details.keys()) != pre_requisites.USER_DETAILS_KEYS:
+        if details.keys() != pre_requisites.USER_DETAILS_KEYS:
             raise Exception()
 
         if not all(
@@ -66,23 +65,12 @@ class User:
             validate_email(details["email"])
         except Exception:
             raise Exception()
-        
-        # Verifying region.
-        if details["region"] != None:
-            try:
-                date_of_birth = date(*details["date_of_birth"])
-                
-                if date_of_birth.year not in range(1900, date.today().year + 1):
-                    raise Exception
-            except Exception:
-                raise Exception()
 
     def edit_details(self,
                      first_name: str = None,
                      middle_name: str = None,
                      email: str = None,
-                     region: str = None,
-                     date_of_birth: list = None) -> None:
+                     region: str = None) -> None:
         
         edit = {key: value for key, value in locals().items() if key != "self" and value != None}
         
@@ -90,10 +78,8 @@ class User:
         details.update(edit)
         self._verify_details(details)
         
-        details = json.dumps(details).replace("{", "{\n").replace("}", "\n}").replace(", ", ",\n")
-
         with open(info.DATA_USER, 'w') as file:
-            file.write(details)
+            json.dump(details, file, indent = 4)
 
 class TroubleShoot:
     # The following functions return True if fixed else False if the problem isn't fixed.
