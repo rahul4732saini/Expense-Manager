@@ -22,7 +22,6 @@ end_datetime: datetime.datetime = ending datetime of the range.
 """
 
 try:
-    from typing import Any
     from datetime import date, datetime
 except:
     raise Exception("0xegbl0001")
@@ -32,7 +31,7 @@ class DateRange:
         self.start = start_date
         self.end = end_date
 
-    def __setattr__(self, name: str, value: Any) -> None:
+    def __setattr__(self, name: str, value: object) -> None:
         match name:
             case "start":
                 if value.__class__ != date:
@@ -58,7 +57,7 @@ class DatetimeRange:
         self.start = start_datetime
         self.end = end_datetime
 
-    def __setattr__(self, name: str, value: Any) -> None:
+    def __setattr__(self, name: str, value: object) -> None:
         match name:
             case "start":
                 if value.__class__ != datetime:
