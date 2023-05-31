@@ -5,8 +5,8 @@ try:
     import json
     import os.path
     import data.info as info
-    import transactions.payment_mode as pay_mode
     import data.pre_requisites as pre_requisites
+    import transactions.payment_mode as pay_mode
 except Exception:
     raise Exception()
 
@@ -17,7 +17,7 @@ class Manage:
         
         with open(info.DATA_SETTINGS, 'r') as file:
             try:
-                settings: dict = json.loads(file.read())
+                settings: dict = json.load(file)
 
                 if settings.__class__ != dict:
                     raise Exception()
@@ -40,11 +40,11 @@ class Manage:
         except Exception:
             raise Exception()
 
-    def _write_settings(self, settings: dict):
-        settings: str = json.dumps(settings).replace("{", "{\n").replace("}", "\n}").replace(", ", ",\n")
+    def write_settings(self, settings: dict):
+        self._verify_settings(settings)
 
         with open(info.DATA_SETTINGS, 'w') as file:
-            file.write(settings)
+            json.dump(settings, file, indent = 4)
 
     def set_theme(self, theme: str):
         if theme not in pre_requisites.THEME:
@@ -53,8 +53,7 @@ class Manage:
         settings: dict = self.get_settings()
         settings.update({"theme": "dark" if theme == "dark" else "light"})
 
-        self._verify_settings(settings)
-        self._write_settings(settings)
+        self.write_settings(settings)
 
     def set_default_payment_mode(self, payment_mode: str) -> None:
         if payment_mode not in pay_mode.Manage().get_mode_names():
@@ -63,5 +62,4 @@ class Manage:
         settings = self.get_settings()
         settings.update({"default_payment_mode": payment_mode})
 
-        self._verify_settings(settings)
-        self._write_settings(settings)
+        self.write_settings(settings)

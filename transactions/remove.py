@@ -17,11 +17,12 @@ try:
     import os
     import json
     import data.info as info
+    import user.settings as settings
     import transactions.filter as filter
     import transactions.details as details
-    import transactions.catagory as catagory
     import data.pre_requisites as pre_requisites
     import transactions.payment_mode as pay_mode
+    from transactions.catagory import Income, Expense
 except Exception:
     raise Exception("0xegbl0001")
 
@@ -29,7 +30,7 @@ def remove_transactions(transactions_id: str | list[str]) -> None:
     if transactions_id.__class__ not in (str, list):
             raise Exception("0xerem0001")
 
-    transactions_id = set(transactions_id) if transactions_id.__class__ == list else {transactions_id}
+    transactions_id: set = set(transactions_id) if transactions_id.__class__ == list else {transactions_id}
 
     # List of transactions_id queued for deletion that exist, i.e., are valid.
     valid_transactions_id: list[str] = [i for i in transactions_id if i in details.Manage().get_transactions_id()]
@@ -47,10 +48,10 @@ def remove_catagory(catagories: str | list[str], transaction_type: str) -> None:
     if transaction_type not in pre_requisites.TRANSACTION_TYPES or catagories.__class__ not in (str, list):
         raise Exception("0xerem0002")
     
-    catagory_type: catagory.Income | catagory.Expense = catagory.Income() if transaction_type == "income" else catagory.Expense()
+    catagory_type: dict = Income().get_catagories() if transaction_type == "income" else Expense().get_catagories()
     
-    catagories = catagories if catagories.__class__ == list else [catagories]
-    valid_catagories: list[str] = [i for i in catagories if i in catagory_type.get_catagories()]
+    catagories: set = set(catagories) if catagories.__class__ == list else {catagories}
+    valid_catagories: list[str] = [i for i in catagories if i in catagory_type]
 
     if "others" in valid_catagories:
         raise Exception("0xerem0005")
@@ -60,7 +61,7 @@ def remove_catagory(catagories: str | list[str], transaction_type: str) -> None:
         
         details.Manage().write_transaction(i, exists = True)
 
-    target: dict = {key: value for key, value in catagory_type.get_catagories().items() if key not in valid_catagories}
+    target: dict = {key: value for key, value in catagory_type.items() if key not in valid_catagories}
 
     with open("%s\\%s.json" % (info.DATA_CATAGORIES, transaction_type), 'w') as file:
         json.dump(target, file, indent = 4)
@@ -74,7 +75,7 @@ def remove_payment_mode(payment_modes: str | list[str]) -> None:
         raise Exception("0xerem0003")
     
     # List of payment mode names queued for deletion that exist, i.e., are valid.
-    payment_modes = payment_modes if payment_modes.__class__ == list else [payment_modes]
+    payment_modes: set = set(payment_modes) if payment_modes.__class__ == list else {payment_modes}
     valid_payment_modes: list[str] = [i for i in payment_modes if i in pay_mode.Manage().get_mode_names()]
 
     if "cash" in valid_payment_modes:
@@ -84,6 +85,11 @@ def remove_payment_mode(payment_modes: str | list[str]) -> None:
         i.update({"payment_mode": "cash"})
         
         details.Manage().write_transaction(i, exists = True)
+
+    setting:dict = settings.Manage().get_settings()
+    setting.update({"default_payment_mode": "cash"})
+
+    settings.Manage().write_settings(setting)
 
     # Creating payment modes list of only dictionaries that aren't queued for deletion.
     target: list[dict] = [i for i in pay_mode.Manage().get_modes() if i["name"] not in valid_payment_modes]
