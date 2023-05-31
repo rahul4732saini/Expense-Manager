@@ -44,11 +44,11 @@ class Manage:
             raise Exception("0xepym0002")
 
         if len(payment_modes) > 30:
-            raise Exception("0xepym0011")
+            raise Exception("0xepym0009")
         
         # Checking for duplicate payment mode names
         if len(mode_names) != len(set(mode_names)):
-            raise Exception("0xepym0012")
+            raise Exception("0xepym0010")
 
         # Verifying each payment mode dictionary in the list of payment modes.
         i: dict
@@ -102,7 +102,7 @@ class Manage:
             raise Exception("0xepym0005")
 
         if name in [i["name"] for i in payment_modes]:
-            raise Exception("0xepym0010")
+            raise Exception("0xepym0008")
 
         entry: dict = {
             "name": name,
@@ -132,13 +132,13 @@ class Manage:
         payment_modes = self.get_modes()
 
         if name in [i["name"] for i in payment_modes]:
-            raise Exception("0xepym0010")
+            raise Exception("0xepym0008")
 
         # Dictionary of the edits to be updated in the payment mode.
         edit: dict = {key:value for key, value in locals().items() if key not in ["self", "current_name", "new_name", "payment_modes"] and value != None}
 
         if len(edit) == 0:
-            raise Exception("0xepym0009")
+            raise Exception("0xepym0007")
         
         # Capturing the dictionary with the name to edited.
         try:
@@ -150,7 +150,7 @@ class Manage:
             else:
                 raise Exception
         except Exception:
-            raise Exception("0xepym0008")
+            raise Exception("0xepym0006")
 
         if edit.get("initial_balance") != None:
             # Rounding off the current balance value to the nearest 2 decimal places if it is a float value.
@@ -177,10 +177,10 @@ class TroubleShoot:
     def er_0xepym0002(self) -> bool:
         ...
 
-    def er_0xepym0011(self) -> bool:
+    def er_0xepym0009(self) -> bool:
         ...
 
-    def er_0xepym0012(self) -> bool:
+    def er_0xepym0010(self) -> bool:
         ...
 
     # To be continued...

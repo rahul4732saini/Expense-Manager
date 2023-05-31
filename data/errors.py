@@ -53,20 +53,28 @@ ERROR = {
             "0xepym0003": "There was an error in verifying the payment mode.",
             "0xepym0004": "Payment mode name cannot contain more than 30 characters.",
             "0xepym0005": "You cannot exceed the limit of 30 payment modes.",
-            "0xepym0006": "All payment modes cannot be deleted.",
-            "0xepym0007": "One or more payment modes queued for deletion do not exist.",
-            "0xepym0008": "There was an error in finding the payment mode with the provided name.",
-            "0xepym0009": "No arguments were provided for editing the payment mode.",
-            "0xepym0010": "Cannot use the provided payment mode name as a payment mode with similar name already exists.",
-            "0xepym0011": "The payment mode data file exceeds the limit of payment modes that can be stored (30).",
-            "0xepym0012": "Duplicate payment modes were found in the data folder.",
-            "0xepym0013": "Invalid arguments provided for payment modes deletion."
+            "0xepym0006": "There was an error in finding the payment mode with the provided name.",
+            "0xepym0007": "No arguments were provided for editing the payment mode.",
+            "0xepym0008": "Cannot use the provided payment mode name as a payment mode with similar name already exists.",
+            "0xepym0009": "The payment mode data file exceeds the limit of payment modes that can be stored (30).",
+            "0xepym0010": "Duplicate payment modes were found in the data folder.",
+            "0xepym0011": "Invalid arguments provided for payment modes deletion."
         },
         "filter":{
             "0xetrn01fl": "Invalid arguments were provided for filtering transactions.",
         },
         "sort":{
             "0xetrn01sr": "Unexpected arguments were provided for sorting transactions."
+        },
+        "remove":{
+            "0xerem0001": "Unexpected arguments provided for deleting transactions.",
+            "0xerem0002": "Unexpected arguments provided for deleting catagories.",
+            "0xerem0003": "Unexpected arguments provided for deleting payment modes.",
+            "0xerem0004": "One or more transactions ID provided for transactions deletion are invalid.",
+            "0xerem0005": "One or more catagories queued for deletion cannot be removed.",
+            "0xerem0006": "One or more catagory names provided for cataogories deletion are invalid.",
+            "0xerem0007": "One or more payment modes queued for deletion cannot be removed.",
+            "0xerem0008": "One or more payment mode names provided for payment modes deletion are invalid.",
         }
     },
     "budgets":{
