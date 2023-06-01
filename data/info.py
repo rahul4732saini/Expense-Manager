@@ -27,3 +27,4 @@ DATA_CATAGORIES = "%s\\catagories" % DATA_PATH
 DATA_USER = "%s\\user_details.json" % DATA_PATH
 DATA_SETTINGS = "%s\\settings.json" % DATA_PATH
 DATA_REGION = "%s\\regions.json" % DATA_PATH
+DATA_SECURITY = "%s\\security" % DATA_PATH

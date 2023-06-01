@@ -33,7 +33,8 @@ class Manage:
             if not all(
                 [
                     settings["theme"] in pre_requisites.THEME,
-                    settings["default_payment_mode"] in pay_mode.Manage().get_mode_names()
+                    settings["default_payment_mode"] in pay_mode.Manage().get_mode_names(),
+                    settings["password"].__class__ == bool
                 ]
             ):
                 raise Exception
