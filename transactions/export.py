@@ -51,7 +51,7 @@ class Transactions:
                     raise Exception("0xetrn0ex2")
                 
             case "savefile_name":
-                if value.__len__() not in range(1, 50):
+                if len(value) not in range(1, 50):
                     raise Exception("0xetrn0ex3")
         
         return super().__setattr__(name, value)

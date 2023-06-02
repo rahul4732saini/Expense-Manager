@@ -1,17 +1,17 @@
 ERROR = {
-    "__global__":{
+    "__global__": {
         "0xegbl0001": "One or more of the required modules are missing.",
         "0xegbl0002": "The data folder was not found.",
         "0xegbl0003": "Class attributes must not be changed from their default values.",
         "0xegbl0004": "Invalid arguments provided for setting class attributes."
     },
-    "common":{
-        "directory":{
+    "common": {
+        "directory": {
             "0xedir0001": "The path specified cannot be found."
         }
     },
-    "transactions":{
-        "catagory":{
+    "transactions": {
+        "catagory": {
             "0xecat0001": "Catagories save folder not found.",
             "0xecat0002": "Income Catagories file not found.",
             "0xecat0003": "Income catagories file found to be corrupted.",
@@ -24,7 +24,7 @@ ERROR = {
             "0xecat0010": "The expense catagories data file exceeds the limit of catagories that can be stored (50).",
             "0xecat0011": "The catagory name cannot exceed the length of 25 characters.",
         },
-        "details":{
+        "details": {
             "0xetrn0001": "Unexpected files found in the transactions save folder.",
             "0xetrn0002": "Files with unexpected extension found in the save folder.",
             "0xetrn0003": "Corrupted transaction files found in the save folder.",
@@ -38,16 +38,16 @@ ERROR = {
             "0xetrn0011": "One or more transactions queued for deletion do not exist.",
             "0xetrn0012": "No arguments were provided for editing the transaction."
         },
-        "export":{
+        "export": {
             "0xetrn0ex1": "Invalid transactions_ID were provided as arguments.",
             "0xetrn0ex2": "The provided save location for the export file cannot be found.",
             "0xetrn0ex3": "No proper name provided for the export file.",
             "0xetrn0ex4": "Cannot continue the process as one or more of the target transaction files are corrupted."
         },
-        "analysis":{
+        "analysis": {
             "0xetrn01an": "Invalid arguments detected while analysing transactions.",
         },
-        "payment_mode":{
+        "payment_mode": {
             "0xepym0001": "Payment Modes file cannot be found.",
             "0xepym0002": "Payment Modes data file was found to be corrupted.",
             "0xepym0003": "There was an error in verifying the payment mode.",
@@ -60,13 +60,13 @@ ERROR = {
             "0xepym0010": "Duplicate payment modes were found in the data folder.",
             "0xepym0011": "Invalid arguments provided for payment modes deletion."
         },
-        "filter":{
+        "filter": {
             "0xetrn01fl": "Invalid arguments were provided for filtering transactions.",
         },
-        "sort":{
+        "sort": {
             "0xetrn01sr": "Unexpected arguments were provided for sorting transactions."
         },
-        "remove":{
+        "remove": {
             "0xerem0001": "Unexpected arguments provided for deleting transactions.",
             "0xerem0002": "Unexpected arguments provided for deleting catagories.",
             "0xerem0003": "Unexpected arguments provided for deleting payment modes.",
@@ -77,8 +77,8 @@ ERROR = {
             "0xerem0008": "One or more payment mode names provided for payment modes deletion are invalid.",
         }
     },
-    "budgets":{
-        "details":{
+    "budgets": {
+        "details": {
             "0xebgt0001": "Budgets save folder not found.",
             "0xebgt0002": "Unexpected files found in the budgets save folder.",
             "0xebgt0003": "There was an error in verifying the budget.",
@@ -90,17 +90,25 @@ ERROR = {
             "0xebgt0009": "Cannot create the budget as a budget has already been created for the provided month.",
             "0xebgt0010": "Budgets with similar active month were detected.",
         },
-        "filter":{
+        "filter": {
             "0xebgt01fl": "Invalid arguments were provided for filtering budgets.",
         },
-        "sort":{
+        "sort": {
             "0xebgt01sr": "Unexpected arguments were provided for sorting transactions."
         }
     },
-    "data":{
-        "region":{
+    "data": {
+        "region": {
             "0xereg0001": "Regions data file not found.",
             "0xereg0002": "Regions data file was found to be corrupted."
+        }
+    },
+    "user": {
+        "backup": {
+            "0xebkp01us": "Invalid save_location / file_name provided for the backup file.",
+            "0xebkp02us": "Invalid file_location provided for the backup file.",
+            "0xebkp03us": "The backup was found to be corrupted.",
+            "0xebkp04us": "The backup file provided for restoration is not of a valid object type."
         }
     }
 }
