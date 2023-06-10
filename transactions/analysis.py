@@ -93,36 +93,44 @@ class Status(ABC):
         ...
     
     # The below function is restricted to keyword arguments only!
-    def _verify_arguments(function):
+    def _verify_arguments(*,
+                          year: int,
+                          month: int = None,
+                          day: int = None):
 
-        @wraps(function)
-        def wrapper(self, *,
-                    year: int,
-                    month: int = None,
-                    day: int = None):
-            
-            # Dictionary of all the keywords arguments to be provided to the function.
-            kwargs = {key: value for key, value in locals().items() if value != None and key not in ("self", "function")}
+        def suffix(function):
 
-            # Verifying arguments.
-            try:
-                if year not in range(1980, 2100) or month != None and month not in range(1, 13):
-                    raise Exception
+            @wraps(function)
+            def wrapper(self, *,
+                        year: int = year,
+                        month: int = month,
+                        day: int = day) -> None:
                 
-                if day != None:
-                    date(year, month, day)
+                # Dictionary of all the keywords arguments to be provided to the function.
+                kwargs = {key: value for key, value in locals().items() if value != None and key not in ("self", "function")}
 
-                return function(self, **kwargs)
-            except Exception:
-                raise Exception("0xetrn01an")
+                # Verifying arguments.
+                try:
+                    if year not in range(1980, 2100) or month != None and month not in range(1, 13):
+                        raise Exception
+                    
+                    if day != None:
+                        date(year, month, day)
 
-        return wrapper
+                    return function(self, **kwargs)
+                except Exception:
+                    raise Exception("0xetrn01an")
+
+            return wrapper
+        
+        return suffix
     
     def _evaluate_keys(self, transactions: list[dict], key: str) -> dict:
-        if key not in pre_requisites.TRANSACTION_KEYS:
-            raise Exception("0xetrn01an")
+
+        # Validating the transaction keys.
+        assert key in pre_requisites.TRANSACTION_KEYS, "0xetrn01an"
         
-        # key -> key; value -> number of occurance of the key
+        # key -> key; value -> number of occurance of the key.
         distribution:dict = dict()
 
         i: dict
@@ -142,7 +150,7 @@ class TransactionNumber(Status):
     def transactions(self) -> list[dict]:
         return Manage().get_transactions()
 
-    @Status._verify_arguments    
+    @Status._verify_arguments   
     def year(self, year: int) -> int:
         return len([i for i in self.transactions if i["transaction_datetime"].year == year])
 

@@ -21,10 +21,14 @@ DATA_PATH = "%s\\Users\\%s\\Appdata\\Roaming\\expense_mgr" % (MAIN_DRIVE,USER_NA
 # == Data Folder Sub Folder Paths
 
 DATA_PAYMENT_MODES = "%s\\payment_modes.json" % DATA_PATH
-DATA_TRANSACTIONS = "%s\\transactions" % DATA_PATH
+DATA_TRANSACTIONS = "%s\\transactions.pickle" % DATA_PATH
 DATA_BUDGETS = "%s\\budgets" % DATA_PATH
 DATA_CATAGORIES = "%s\\catagories" % DATA_PATH
 DATA_USER = "%s\\user_details.json" % DATA_PATH
 DATA_SETTINGS = "%s\\settings.json" % DATA_PATH
 DATA_REGION = "%s\\regions.json" % DATA_PATH
 DATA_SECURITY = "%s\\security" % DATA_PATH
+
+# == Cache File Path
+
+DATA_CACHE = "%s\\Windows\\Temp\\exp_mg_cache.pickle" % MAIN_DRIVE

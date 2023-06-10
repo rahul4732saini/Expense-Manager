@@ -28,45 +28,19 @@ This exports:
 try:
     from sys import path
     path.append("..\\Expense Manager")
-    
-    import json
+
     import pickle
     import os.path
-    import data.info as info
     from functools import wraps
-    from dataclasses import dataclass
     from user.details import Manage as user
     import transactions.catagory as catagory
     from budgets.details import Manage as budgets
     from transactions.details import Manage as transactions
     from transactions.payment_mode import Manage as pay_mode
+    from transactions.filter import Filter as filter_transactions
+    from common.objects import Transactions, Budgets, Catagories, PaymentModes, User, AllData
 except Exception:
     raise Exception("0xegbl0001")
-
-@dataclass
-class Transactions:
-    transaction_details: list[dict]
-
-@dataclass
-class Budgets:
-    budget_details: list[dict]
-
-@dataclass
-class Catagories:
-    income_details: dict
-    expense_details: dict
-
-@dataclass
-class PaymentModes:
-    payment_mode_details: list[dict]
-
-@dataclass
-class UserDetails:
-    user_details: dict
-
-@dataclass
-class AllData(Transactions, Budgets, Catagories, PaymentModes, UserDetails):
-    ...
 
 class Create:
     def __init__(self, file_name: str, save_directory: str):
@@ -75,18 +49,14 @@ class Create:
 
     @property
     def file_name(self) -> str:
-        if len(self.__file_name) not in range(1, 50):
-            raise Exception()
+        assert len(self.__file_name) in range(1, 50), "<error>"
         
         return self.__file_name
         
     @property
     def save_directory(self) -> str:
-        if not os.path.exists(self.__save_directory):
-            raise Exception()
-        
-        if os.path.exists(f"{self.__save_directory}\\{self.file_name}.bkp"):
-            raise Exception()
+        assert os.path.exists(self.__save_directory), "<error>"        
+        assert not os.path.exists(f"{self.__save_directory}\\{self.file_name}.bkp"), "<error>"
         
         return self.__save_directory
 
@@ -119,8 +89,8 @@ class Create:
         return PaymentModes(pay_mode.get_modes())
     
     @_write_backup
-    def user_details(self) -> UserDetails:
-        return UserDetails(user.get_details())
+    def user_details(self) -> User:
+        return User(user.get_details())
     
     @_write_backup
     def all_data(self) -> AllData:
@@ -138,13 +108,10 @@ class Restore:
 
     @property
     def file_location(self) -> str:
-        if not os.path.exists(self.__file_location):
-            raise Exception("0xebkp02us")
+        assert os.path.exists(self.__file_location), "0xebkp02us"
         
         base_name = os.path.basename(self.__file_location)
-
-        if base_name.removesuffix(".bkp") == base_name:
-            raise Exception()
+        assert base_name.removeprefix(".bkp") == base_name, "<error>"
         
         return self.__file_location
 
@@ -159,8 +126,7 @@ class Restore:
                 raise Exception("0xebkp03us")
 
             try:
-                if data.__class__ != function(self):
-                    raise Exception
+                assert data.__class__ == function(self)
             except Exception:
                 raise Exception("0xebkp04us")
             
@@ -186,7 +152,7 @@ class Restore:
     
     @_get_data
     def user_details(self):
-        return UserDetails
+        return User
 
     @_get_data
     def all_data(self):
@@ -197,6 +163,7 @@ class Conflit:
     def transactions(self, transaction_details: Transactions) -> Transactions:
         if transaction_details.__class__ == Transactions:
             return Transactions([i for i in transaction_details if i["transaction_id"] in transactions.get_transactions_id()])
+        return Transactions(filter_transactions().transaction_id([i.transaction_id for i in transactions]))
         
         raise Exception()
 
@@ -221,9 +188,9 @@ class Conflit:
         
         raise Exception()
 
-    def user_details(self, user_details: UserDetails) -> UserDetails:
-        if user_details.__class__ == UserDetails:
-            return UserDetails({key: value for key, value in user_details if (key, value) not in user.get_details().items()})
+    def user_details(self, user_details: User) -> User:
+        if user_details.__class__ == User:
+            return User({key: value for key, value in user_details if (key, value) not in user.get_details().items()})
         
         raise Exception()
 

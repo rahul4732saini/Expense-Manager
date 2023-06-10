@@ -22,6 +22,9 @@ end_datetime: datetime.datetime = ending datetime of the range.
 """
 
 try:
+    from sys import path
+    path.append("..\\Expense Manager")
+
     from dataclasses import dataclass
     from datetime import date, datetime
 except:
@@ -31,16 +34,12 @@ except:
 class Transaction:
     transaction_id: str
     status: str
-    datetime_added: datetime
     amount: int | float
     transaction_type: str
     payment_mode: str
     catagory: str
     transaction_datetime: datetime
     description: str | None
-    
-    def __hash__(self):
-        return hash(str(self))
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Transaction):
@@ -50,19 +49,15 @@ class Transaction:
 
 @dataclass
 class Transactions:
-    transactions: set[Transaction]
+    transactions: list[Transaction]
 
 @dataclass
 class Budget:
     budget_id: str
-    datetime_added: datetime
     range: int | float
     month: str
     year: str
     catagories: dict | None
-
-    def __hash__(self):
-        return hash(str(self))
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Budget):
@@ -72,15 +67,12 @@ class Budget:
 
 @dataclass
 class Budgets:
-    budget_details: set[Budget]
+    budgets: list[Budget]
 
 @dataclass
 class Catagory:
     name: str
     color: str
-
-    def __hash__(self):
-        return hash(str(self))
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Catagory):
@@ -90,18 +82,15 @@ class Catagory:
 
 @dataclass
 class Catagories:
-    income_catagories: set[Catagory]
-    expense_catagories: set[Catagory]
+    income_catagories: list[Catagory]
+    expense_catagories: list[Catagory]
 
-@dataclass
+@dataclass 
 class PaymentMode:
     name: str
     color: str
     catagory: str
     initial_balance: int | float
-
-    def __hash__(self):
-        return hash(str(self))
     
     def __eq__(self, other: object):
         if not isinstance(other, PaymentMode):
@@ -111,7 +100,7 @@ class PaymentMode:
 
 @dataclass
 class PaymentModes:
-    payment_modes: set[PaymentMode]
+    payment_modes: list[PaymentMode]
 
 @dataclass
 class User:
@@ -123,10 +112,16 @@ class User:
     date_of_birth: date
 
 @dataclass
+class Settings:
+    theme: str
+    default_payment_mode: str
+    currency: str
+
+@dataclass
 class AllData:
-    transactions: Transaction
-    budget: Budgets
-    Catagories: Catagories
+    transactions: Transactions
+    budgets: Budgets
+    catagories: Catagories
     payment_modes: PaymentModes
     user_details: User
 
@@ -138,18 +133,15 @@ class DateRange:
     def __setattr__(self, name: str, value: object) -> None:
         match name:
             case "start":
-                if value.__class__ != date:
-                    raise Exception("0xegbl0004")
+                assert value.__class__ != date, "0xegbl0004"
                 
             case "end":
-                if value.__class__ != date:
-                    raise Exception("0xegbl0004")
+                assert value.__class__ == date, "0xegbl0004"
                 
         return super().__setattr__(name, value)
 
     def __contains__(self, key: object) -> bool:
-        if key.__class__ != date:
-            raise Exception("0xegbl0004")
+        assert key.__class__ == date, "0xegbl0004"
         
         if key >= self.start and key < self.end:
             return True
@@ -164,22 +156,17 @@ class DatetimeRange:
     def __setattr__(self, name: str, value: object) -> None:
         match name:
             case "start":
-                if value.__class__ != datetime:
-                    raise Exception("0xegbl0004")
+                assert value.__class__ == datetime, "0xegbl0004"
                 
             case "end":
-                if value.__class__ != datetime:
-                    raise Exception("0xegbl0004")
+                assert value.__class__ == datetime, "0xegbl0004"
                 
         return super().__setattr__(name, value)
     
     def __contains__(self, key: object) -> bool:
-        if key.__class__ != datetime:
-            raise Exception("0xegbl0004")
+        assert key.__class__ == datetime, "0xegbl0004"
         
         if key >= self.start and key < self.end:
             return True
         
         return False
-    
-{Transaction(1,1,1,1,1,1,1,1,1)}
