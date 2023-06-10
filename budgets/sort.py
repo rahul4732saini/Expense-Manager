@@ -24,8 +24,7 @@ class Sort:
     # Function to verify the arguments provided to the sort functions.
     def _verify_args(function):
         def wrapper(self, ascending: bool = True):
-            if ascending.__class__ != bool:
-                raise Exception("0xebgt01sr")
+            assert ascending.__class__ == bool, '0xdbgt01sr'
             
             return function(self, ascending = ascending)
 
