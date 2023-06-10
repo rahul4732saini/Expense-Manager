@@ -34,13 +34,6 @@ TRANSACTION_TYPES = (
     "expense"
 )
 
-BUDGET_STATUS = (
-    "success",
-    "failed",
-    "active",
-    "upcoming"
-)
-
 TRANSACTION_STATUS = (
     "cleared",
     "cancelled",
@@ -59,15 +52,13 @@ PAYMENT_MODE_CATAGORIES = (
     "debit_card"
 )
 
-USER_DETAILS_KEYS = (
-    "first_name",
-    "middle_name",
-    "last_name",
-    "email",
-    "region"
-)
-
 THEME = (
     "light",
     "dark"
+)
+
+SETTINGS_KEYS = (
+    "theme",
+    "currency",
+    "default_payment_mode"
 )

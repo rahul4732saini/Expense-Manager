@@ -108,7 +108,9 @@ ERROR = {
             "0xebkp01us": "Invalid save_location / file_name provided for the backup file.",
             "0xebkp02us": "Invalid file_location provided for the backup file.",
             "0xebkp03us": "The backup was found to be corrupted.",
-            "0xebkp04us": "The backup file provided for restoration is not of a valid object type."
+            "0xebkp04us": "The backup file provided for restoration is not of a valid object type.",
+            "0xebkp05us": "The backup file cannot be created as another file with the same name already exists.",
+            "0xebkp06us": "The file provided for restoration is not a backup file."
         }
     }
 }

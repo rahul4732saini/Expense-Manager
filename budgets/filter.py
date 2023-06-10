@@ -21,7 +21,7 @@ try:
     from datetime import date, datetime
     import transactions.analysis as analysis
     from transactions.catagory import Expense
-    from objects.datetime_range import DateRange, DatetimeRange
+    from common.objects import DateRange, DatetimeRange
 
 except Exception:
     raise Exception("0xegbl0001")

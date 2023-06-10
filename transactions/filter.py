@@ -24,7 +24,7 @@ try:
     from datetime import datetime, date
     from catagory import Income, Expense
     import data.pre_requisites as pre_requisites
-    from objects.datetime_range import DatetimeRange, DateRange
+    from common.objects import DatetimeRange, DateRange
 except Exception:
     raise Exception("0xegbl0001")
 
