@@ -20,7 +20,7 @@ try:
     import random
     import os.path
     import data.info as info
-    import data.pre_requisites as pre_requisites
+    import data.requirements as requirements
 except Exception:
     raise Exception("0xegbl0001")
 
@@ -75,8 +75,8 @@ class Manage:
             if not all(
                 [
                     mode["name"].__class__ == str,
-                    mode["color"] in pre_requisites.COLORS,
-                    mode["catagory"] in pre_requisites.PAYMENT_MODE_CATAGORIES,
+                    mode["color"] in requirements.COLORS,
+                    mode["catagory"] in requirements.PAYMENT_MODE_CATAGORIES,
                     mode["initial_balance"].__class__ in (int, float) and mode["initial_balance"] >= 0
                 ]
             ):
@@ -106,7 +106,7 @@ class Manage:
 
         entry: dict = {
             "name": name,
-            "color": random.choice(pre_requisites.COLORS),
+            "color": random.choice(requirements.COLORS),
             "catagory": catagory,
             "initial_balance": round(initial_balance, 2)
         }
@@ -139,6 +139,8 @@ class Manage:
 
         if len(edit) == 0:
             raise Exception("0xepym0007")
+        
+        assert len(edit) != 0, "0xepym0007"
         
         # Capturing the dictionary with the name to edited.
         try:

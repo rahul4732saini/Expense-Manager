@@ -21,35 +21,37 @@ start_datetime: datetime.datetime = starting datetime of the range.
 end_datetime: datetime.datetime = ending datetime of the range.
 """
 
-try:
-    from sys import path
-    path.append("..\\Expense Manager")
+from sys import path
+path.append("..\\Expense Manager")
 
-    from dataclasses import dataclass
-    from datetime import date, datetime
-except:
-    raise Exception("0xegbl0001")
+import re
+from dataclasses import dataclass
+from datetime import date, datetime
 
-@dataclass
 class Transaction:
-    transaction_id: str
-    status: str
-    amount: int | float
-    transaction_type: str
-    payment_mode: str
-    catagory: str
-    transaction_datetime: datetime
-    description: str | None
+    def __init__(
+            self,
+            id: str,
+            status: str,
+            amount: int | float,
+            type: str,
+            payment_mode: str,
+            date_time: datetime,
+            description: str
+    ):
+        
+        self.id = id
+        self.status = status
+        self.amount = amount
+        self.type = type
+        self.payment_mode = payment_mode
+        self.date_time = date_time
+        self.description = description
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Transaction):
-            return False
-        
-        return self.transaction_id == other.transaction_id
+        assert other.__class__ == self.__class__
 
-@dataclass
-class Transactions:
-    transactions: list[Transaction]
+        return self.id == other.id
 
 @dataclass
 class Budget:
@@ -119,7 +121,6 @@ class Settings:
 
 @dataclass
 class AllData:
-    transactions: Transactions
     budgets: Budgets
     catagories: Catagories
     payment_modes: PaymentModes
@@ -170,3 +171,5 @@ class DatetimeRange:
             return True
         
         return False
+    
+datetime(2023, 5, 23)._year

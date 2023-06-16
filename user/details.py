@@ -12,12 +12,10 @@ try:
     from sys import path
     path.append("..\\Expense Manager")
 
-    import re
     import pickle
     import os.path
     import data.info as info
     from common.objects import User
-    from data.region import get_regions
 except Exception:
     raise Exception("0xegbl0001")
 
@@ -42,7 +40,7 @@ class Manage:
                      email: str | None = None,
                      region: str | None = None) -> None:
         
-        edit: dict = {key: value for key, value in locals().items() if key != "self" and value != None}
+        edit: dict = {key: value for key, value in locals().items() if (key, value) != ("self", None)}
         
         assert len(edit) > 0, "<error>"
 

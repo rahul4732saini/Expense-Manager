@@ -20,7 +20,7 @@ try:
     import user.settings as settings
     import transactions.filter as filter
     import transactions.details as details
-    import data.pre_requisites as pre_requisites
+    import data.requirements as requirements
     import transactions.payment_mode as pay_mode
     from transactions.catagory import Income, Expense
 except Exception:
@@ -45,7 +45,7 @@ def remove_transactions(transactions_id: str | list[str]) -> None:
         raise Exception("0xerem0004")
 
 def remove_catagory(catagories: str | list[str], transaction_type: str) -> None:
-    if transaction_type not in pre_requisites.TRANSACTION_TYPES or catagories.__class__ not in (str, list):
+    if transaction_type not in requirements.TRANSACTION_TYPES or catagories.__class__ not in (str, list):
         raise Exception("0xerem0002")
     
     catagory_type: dict = Income().get_catagories() if transaction_type == "income" else Expense().get_catagories()

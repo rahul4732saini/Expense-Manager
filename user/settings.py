@@ -5,8 +5,6 @@ try:
     import pickle
     import os.path
     import data.info as info
-    import data.pre_requisites as pre_requisites
-    import transactions.payment_mode as pay_mode
     from common.objects import Settings
 except Exception:
     raise Exception()

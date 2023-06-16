@@ -23,7 +23,7 @@ try:
     import payment_mode as pay_mode
     from datetime import datetime, date
     from catagory import Income, Expense
-    import data.pre_requisites as pre_requisites
+    import data.requirements as requirements
     from common.objects import DatetimeRange, DateRange
 except Exception:
     raise Exception("0xegbl0001")
@@ -73,7 +73,7 @@ class Filter:
         return self
     
     def status(self, status: str):
-        if status not in pre_requisites.TRANSACTION_STATUS:
+        if status not in requirements.TRANSACTION_STATUS:
             raise Exception("0xetrn01fl")
         
         self.__filtered_list = list(filter(lambda trn: trn["status"] == status, self.__filtered_list))
@@ -102,7 +102,7 @@ class Filter:
         return self
     
     def transaction_type(self, transaction_type: str):
-        if transaction_type not in pre_requisites.TRANSACTION_TYPES:
+        if transaction_type not in requirements.TRANSACTION_TYPES:
             raise Exception("0xetrn01fl")
         
         self.__filtered_list = list(filter(lambda trn: trn["transaction_type"] == transaction_type, self.__filtered_list))
@@ -167,7 +167,7 @@ class Filter:
         return self
 
     def catagory(self, catagory: str | list[str], transaction_type: str):
-        if transaction_type not in pre_requisites.TRANSACTION_TYPES:
+        if transaction_type not in requirements.TRANSACTION_TYPES:
             raise Exception("0xetrn01fl")
         
         catagory_type = Income() if transaction_type == "income" else Expense()

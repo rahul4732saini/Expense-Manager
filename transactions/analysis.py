@@ -61,17 +61,14 @@ This exports:
 -   day: returns a dictionary of the payment mode distribtuion of the transactions on the provided date.
 """
 
-try:
-    from sys import path
-    path.append("..\\Expense Manager")
+from sys import path
+path.append("..\\Expense Manager")
 
-    from datetime import date
-    from functools import wraps
-    from abc import ABC, abstractmethod
-    from transactions.details import Manage
-    import data.pre_requisites as pre_requisites
-except Exception:
-    raise Exception("0xegbl0001")
+from datetime import date
+from functools import wraps
+from abc import ABC, abstractmethod
+from transactions.details import Manage
+import data.requirements as requirements
 
 # Base class for all following analytic classes.
 class Status(ABC):
@@ -111,8 +108,7 @@ class Status(ABC):
 
                 # Verifying arguments.
                 try:
-                    if year not in range(1980, 2100) or month != None and month not in range(1, 13):
-                        raise Exception
+                    assert year in range(1980, 2100) or month != None and month in range(1, 13)
                     
                     if day != None:
                         date(year, month, day)
@@ -128,7 +124,7 @@ class Status(ABC):
     def _evaluate_keys(self, transactions: list[dict], key: str) -> dict:
 
         # Validating the transaction keys.
-        assert key in pre_requisites.TRANSACTION_KEYS, "0xetrn01an"
+        assert key in requirements.TRANSACTION_KEYS, "0xetrn01an"
         
         # key -> key; value -> number of occurance of the key.
         distribution:dict = dict()
@@ -302,7 +298,7 @@ class CatagoryDistribution(Status):
         self.transaction_type = transaction_type
 
     def __setattr__(self, name: str, value: object):
-        if name == "transaction_type" and value not in pre_requisites.TRANSACTION_TYPES:
+        if name == "transaction_type" and value not in requirements.TRANSACTION_TYPES:
             raise Exception()
         
         return super().__setattr__(name, value)

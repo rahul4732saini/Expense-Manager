@@ -16,18 +16,15 @@ This exports:
 -   ** Subclass of Income **
 -   ** Same functions as of Income **
 """
+  
+from sys import path
+path.append("..\\Expense Manager")
 
-try:    
-    from sys import path
-    path.append("..\\Expense Manager")
-
-    import json
-    import random
-    import os.path
-    import data.info as info
-    import data.pre_requisites as pre_requisites
-except Exception:
-    raise Exception("0xegbl0001")
+import json
+import random
+import os.path
+import data.info as info
+import data.requirements as requirements
 
 class Income:
     @property
@@ -38,30 +35,24 @@ class Income:
 
         # Checking the existance of the catagories file path.
         if not os.path.exists("%s\\%s.json" % (info.DATA_CATAGORIES, self.file)):
-            if not os.path.exists(info.DATA_CATAGORIES):
-                raise Exception("0xecat0001")
-            else:
-                raise Exception("0xecat0002") if self.file == "income" else Exception("0xecat0007")
+            assert os.path.exists(info.DATA_CATAGORIES), "0xecat0001"
+        else:
+            assert False, "0xecat0002" if self.file == "income" else "0xecat0007"
 
         # Accessing the catagory file, capturing the contents and Verifying them.
         try:
             with open("%s\\%s.json" % (info.DATA_CATAGORIES, self.file), 'r') as file:
                 catagories: dict = json.load(file)
 
-            if catagories.__class__ != dict:
-                raise Exception
-            
-            if "others" not in catagories:
-                raise Exception
+            assert catagories.__class__ == dict
+            assert "others" in catagories
         except:
             raise Exception("0xecat0003") if self.file == "income" else Exception("0xecat0008")
 
-        if catagories.__len__() > 50:
-            raise Exception("0xecat0009") if self.file == "income" else Exception("0xecat0010")
+        assert len(catagories) < 5, "0xecat0009" if self.file == "income" else "0xecat0010"
 
-        # Verifying the catagory file details.
-        if not all((key.__class__ == str and value in pre_requisites.COLORS and len(key) <= 25 for key, value in catagories.items())):
-            raise Exception("0xecat0003")
+        # Verifying the catagory file details.        
+        assert all((key.__class__ == str and value in requirements.COLORS and len(key) <= 25 for key, value in catagories.items())), "0xecat0003"
         
         return catagories
 
@@ -70,15 +61,10 @@ class Income:
             json.dump(catagories, file, indent = 4)
 
     def _verify_catagory_name(self, catagory_name: str) -> None:
-        if catagory_name.__class__ != str or len(catagory_name) == 0:
-            raise Exception("0xecat0004")
+        assert catagory_name not in self.get_catagories().keys(), "0xecat0006"
+        assert catagory_name.__class__ == str and len(catagory_name) != 0, "0xecat0004"
+        assert len(catagory_name) < 5, "0xecat0011"
         
-        if len(catagory_name) > 25:
-            raise Exception("0xecat0011")
-        
-        # Checking if the provided argument is already present in the catagory names
-        if catagory_name in self.get_catagories().keys():
-            raise Exception("0xecat0006")
 
     def add_catagory(self, catagory_name: str) -> None:
         self._verify_catagory_name(catagory_name)
@@ -86,12 +72,11 @@ class Income:
         catagories: dict = self.get_catagories()
 
         # The new catagory is updated into the catagories dictionary and saved into the catagories file.
-        catagories.update({catagory_name: random.choice(pre_requisites.COLORS)})
+        catagories.update({catagory_name: random.choice(requirements.COLORS)})
         self._write_catagory(catagories)
 
     def edit_catagory(self, old_catagory_name:str, new_catagory_name:str) -> None:
-        if old_catagory_name not in self.get_catagories().keys():
-            raise Exception("0xecat0005")
+        assert old_catagory_name in self.get_catagories().keys(), "0xecat0005"
         
         self._verify_catagory_name(new_catagory_name)
         

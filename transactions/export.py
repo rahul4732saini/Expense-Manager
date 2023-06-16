@@ -17,7 +17,7 @@ try:
     import pandas
     import os.path
     from details import Manage
-    import data.pre_requisites as pre_requisites
+    import data.requirements as requirements
 except Exception:
     raise Exception("0xegbl0001")
 
@@ -65,7 +65,7 @@ class Transactions:
         except Exception:
             raise Exception("0xetrn0ex4")
             
-        return pandas.DataFrame(transactions_details, columns = pre_requisites.TRANSACTION_KEYS)
+        return pandas.DataFrame(transactions_details, columns = requirements.TRANSACTION_KEYS)
     
     def to_CSV(self) -> None:
         self._to_DataFrame().to_csv("%s\\%s.csv" % (self.save_location, self.savefile_name), index = False)

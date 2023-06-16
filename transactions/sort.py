@@ -10,14 +10,11 @@ This exports:
 -   transaction_datetime: return a list of transactions sorted on the basis of the datetime of transaction.
 """
 
-try:
-    from sys import path
-    path.append("..\\Expense Manager")
+from sys import path
+path.append("..\\Expense Manager")
 
-    from details import Manage
-    from functools import wraps
-except Exception:
-    raise Exception("0xegbl0001")
+from details import Manage
+from functools import wraps
 
 class Sort:
 
@@ -27,9 +24,8 @@ class Sort:
         @wraps(function)
         def wrapper(self, ascending: bool = True):
 
-            # Verifying the type of the argument.
-            if ascending.__class__ != bool:
-                raise Exception("0xetrn01sr")
+            # Verifying the type of the argument.        
+            assert ascending.__class__ == bool, "0xetrn01sr"
 
             return function(self, ascending)
 
