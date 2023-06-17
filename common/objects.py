@@ -24,7 +24,6 @@ end_datetime: datetime.datetime = ending datetime of the range.
 from sys import path
 path.append("..\\Expense Manager")
 
-import re
 from dataclasses import dataclass
 from datetime import date, datetime
 
@@ -171,5 +170,3 @@ class DatetimeRange:
             return True
         
         return False
-    
-datetime(2023, 5, 23)._year
